@@ -36,6 +36,36 @@
     .seg{border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06)}
     .seg button.active{background:var(--ciy-yellow);color:#1a1a1a}
     .text-white\/50,.text-white\/60,.text-white\/70,.text-white\/80,.text-white{color:#0f172a!important}
+    /* ===== All Reports Table Layout ===== */
+    #student-reports-table {
+  table-layout: fixed;
+  width: 100%;
+  margin: auto;
+}
+
+#student-reports-table th,
+#student-reports-table td {
+  text-align: center;      /* กลางแนวนอน */
+  vertical-align: middle;  /* กลางแนวตั้ง */
+  padding: 12px 8px;
+  word-break: break-word;  /* ตัดคำไม่ให้ดันกล่อง */
+}
+   #student-reports-table td.text-left-cell {
+  text-align: left;       /* ชิดซ้าย */
+  padding-left: 12px;     /* มีระยะห่างจากขอบนิดหน่อย */
+} 
+    /* กำหนดความกว้างคอลัมน์ */
+    #student-reports-table th:nth-child(1){ width:5%; }  /* No */
+    #student-reports-table th:nth-child(2){ width:14%; }  /* Date */
+    #student-reports-table th:nth-child(3){ width:16%; }  /* Time */
+    #student-reports-table th:nth-child(4){ width:12%; } /* Topic */
+    #student-reports-table th:nth-child(5){ width:12%; } /* Session incharge */
+    #student-reports-table th:nth-child(6){ width:16%; } /* Session type */
+    #student-reports-table th:nth-child(7){ width:16%; } /* Session report */
+    #student-reports-table th:nth-child(8){ width:16%; } /* Feedback */
+    #student-reports-table th:nth-child(9){ width:16%; } /* Recommendation */
+    #student-reports-table th:nth-child(10){ width:16%; } /* Link */
+
   </style>
 </head>
 <body class="bg-gradient-ciy text-sky-900">
@@ -186,9 +216,9 @@
             <div class="text-sm text-white/60" id="student-report-count"></div>
           </div>
           <div class="overflow-x-auto">
-            <table class="w-full text-left border border-slate-300 rounded-xl overflow-hidden bg-white">
+           <table id="student-reports-table" class="w-full min-w-[1400px] text-left border border-slate-300 rounded-xl bg-white">
               <thead class="table-header">
-                <tr class="[&>th]:px-4 [&>th]:py-3">
+                <tr class="[&>th]:px-4 [&>th]:py-3 [&>th]:text-center">
                   <th id="th-no-2">No</th>
                   <th id="th-date-2">Date</th>
                   <th id="th-time-2">Time</th>
@@ -234,7 +264,15 @@
         </div>
         <div>
           <label class="block text-sm mb-1">Session type</label>
-          <input type="text" name="session_type" class="input w-full px-4 py-3 rounded-xl" placeholder="python / project / …"/>
+          <div>
+
+  <select name="session_type" required class="input w-full px-4 py-3 rounded-xl">
+    <option value="">-- Select Session Type --</option>
+    <option value="Regular class">Regular class</option>
+    <option value="Make-Up class">Make-Up class</option>
+  </select>
+</div>
+
         </div>
         <div class="md:col-span-2">
           <label class="block text-sm mb-1">Session report</label>
@@ -357,7 +395,17 @@
     function parseCSV(text){const rows=[];let i=0,cur='',inQ=false,row=[];while(i<text.length){const ch=text[i];if(inQ){if(ch=='"'){if(text[i+1]=='"'){cur+='"';i++}else inQ=false}else cur+=ch}else{if(ch=='"')inQ=true;else if(ch==','){row.push(cur);cur=''}else if(ch=='\r'){}else if(ch=='\n'){row.push(cur);rows.push(row);cur='';row=[]}else cur+=ch}i++}if(cur.length||row.length){row.push(cur);rows.push(row)}const header=rows.shift()||[];return rows.map(r=>{const o={};header.forEach((h,idx)=>o[h.trim()]=(r[idx]??'').trim());return o})}
     function dateFromAny(s){if(!s)return null;const d=new Date(s);if(!isNaN(d))return d;const m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);if(m){const dd=+m[1],MM=+m[2]-1,yy=+m[3]<100?('20'+m[3]):+m[3];const dt=new Date(yy,MM,dd);if(!isNaN(dt))return dt}return null}
     function fmtDate(s){const d=dateFromAny(s);if(!d)return s||'-';return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear()}
-    function statusBadge(status){const good=(status||'').toLowerCase().includes('enrolled');const bad=(status||'').toLowerCase().includes('not');const cls=good?'badge-green':bad?'badge-red':'badge-blue';const label=status||(state.lang==='th'?'ไม่ทราบ':'Unknown');return `<span class="text-xs px-2.5 py-1 rounded-full ${cls}">${label}</span>`}
+
+    function statusBadge(status){
+  const lower = (status || '').toLowerCase().trim();
+  const good = lower === 'enrolled';                // เฉพาะคำว่า Enrolled เท่านั้น
+  const bad  = lower === 'not re-enrolled';         // เฉพาะคำว่า Not re-enrolled
+  const cls = good ? 'badge-green' : bad ? 'badge-red' : 'badge-blue';
+  const label = status || (state.lang==='th' ? 'ไม่ทราบ' : 'Unknown');
+  return `<span class="text-xs px-2.5 py-1 rounded-full ${cls}">${label}</span>`;
+}
+
+    
     function loadingRow(c=6){return `<tr><td colspan="${c}" class="px-4 py-6 text-white/60">${state.lang==='th'?'กำลังโหลด...':'Loading...'}</td></tr>`}
     function emptyRow(msg,c=6){return `<tr><td colspan="${c}" class="px-4 py-6 text-white/60">${msg}</td></tr>`}
     function linkOrDash(url){if(!url)return '-';const safe=url.startsWith('http')?url:null;return safe?`<a href="${safe}" target="_blank" rel="noopener noreferrer" class="link">${state.lang==='th'?'เปิด':'Open'}</a>`:'-'}
@@ -585,7 +633,7 @@
       `;
       const tbody=$('#parent-reports');
       tbody.innerHTML = state.loading.reports ? loadingRow(6) : '';
-      const reports = state.reports.filter(r=>r.coder_id===s.coder_id).sort((a,b)=>dateFromAny(b.date)-dateFromAny(a.date));
+      const reports = state.reports.filter(r=>r.coder_id===s.coder_id).sort((a,b)=>dateFromAny(a.date)-dateFromAny(b.date));
       $('#report-count').textContent = `${reports.length} ${state.lang==='th'?'รายการ':'items'}`;
       if (!state.loading.reports && reports.length===0) tbody.innerHTML = emptyRow(state.lang==='th'?'ยังไม่มีรายงาน':'No reports yet',6);
       else if (!state.loading.reports){
@@ -707,18 +755,18 @@
         }
       }
 
-      // Reports table
+            // Reports table
       const tbody=$('#student-reports');
       tbody.innerHTML = state.loading.reports ? loadingRow(10) : '';
       const rep = state.reports
         .filter(r => (r.coder_id||'').toLowerCase() === (s.coder_id||'').toLowerCase())
-        .sort((a,b)=> (dateFromAny(b.date) - dateFromAny(a.date)));
+        .sort((a,b)=> (dateFromAny(a.date) - dateFromAny(b.date)));
 
       $('#student-report-count').textContent = `${rep.length} ${state.lang==='th'?'รายการ':'items'}`;
 
       if(!state.loading.reports && rep.length===0){
         tbody.innerHTML = emptyRow(state.lang==='th'?'ยังไม่มีรายงาน':'No reports yet', 10);
-      }else if(!state.loading.reports){
+      } else if(!state.loading.reports){
         tbody.innerHTML = rep.map((r,i)=>`
           <tr class="row-hover">
             <td class="px-4 py-3">${i+1}</td>
@@ -727,12 +775,18 @@
             <td class="px-4 py-3">${r.topic || r.course || '-'}</td>
             <td class="px-4 py-3">${r.session_incharge || r.coach_name || '-'}</td>
             <td class="px-4 py-3">${r.session_type || '-'}</td>
-            <td class="px-4 py-3 max-w-[420px]"> <div>${r.session_report || r.progress_summary || '--'}</div></td>
-            <td class="px-4 py-3 max-w-[420px]"><div>${r.feedback || '--'}</div></td>
-            <td class="px-4 py-3 max-w-[420px]"><div>${r.next_recommend || r.next_plan || '--'}</div></td>
+
+            <!-- ชิดซ้าย 3 คอลัมน์ยาว -->
+            <td class="px-4 py-3 max-w-[420px] text-left-cell"><div>${r.session_report || r.progress_summary || '--'}</div></td>
+            <td class="px-4 py-3 max-w-[420px] text-left-cell"><div>${r.feedback || '--'}</div></td>
+            <td class="px-4 py-3 max-w-[420px] text-left-cell"><div>${r.next_recommend || r.next_plan || '--'}</div></td>
+
+            <!-- เติมคอลัมน์ลิงก์ (อันที่ 10 ให้ครบหัวตาราง) -->
+            <td class="px-4 py-3">${linkOrDash(r.link12 || r.attachments)}</td>
           </tr>
         `).join('');
       }
+
 
       // Add report button
       $('#btn-add-report').onclick=()=>openReportModal(s);
@@ -898,7 +952,13 @@
     function router(){
       const hash=location.hash||'#/';
       if(hash==='#/'||hash==='#'){renderLanding();}
-      else if(hash.startsWith('#/parent')){renderParent();}
+      else if(hash.startsWith('#/parent')){
+        if (state.session.role==='parent' && state.session.parentId){
+          location.hash = `#/student/${state.session.parentId}`;
+        } else {
+          renderParent();
+        }
+      }
       else if(hash.startsWith('#/coach')){renderCoach();}
       else if(hash.startsWith('#/student/')){const m=hash.match(/^#\/student\/(.+)$/); if(m) renderStudentDetail(m[1]); else renderLanding();}
       else renderLanding();
@@ -956,7 +1016,10 @@
       const s=state.students.find(x=>(x.coder_id||'').toLowerCase()===coder_id.toLowerCase());
       if(!s){showAlert(state.lang==='th'?'ไม่พบ Coder ID':'Coder ID not found','error');return;}
       if(String(s.parent_password).trim()!==password){showAlert(state.lang==='th'?'รหัสผู้ปกครองไม่ถูกต้อง':'Incorrect parent password','error');return;}
-      state.session={role:'parent',parentId:s.coder_id}; saveSession(); renderParent();
+      state.session = { role:'parent', parentId:s.coder_id };
+      saveSession();
+      location.hash = `#/student/${s.coder_id}`;
+
     }
     function handleCoachLogin(e){
       e.preventDefault();
