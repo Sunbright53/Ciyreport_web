@@ -356,14 +356,15 @@
       try{
         state.loading.students=true;
         const raw=await fetchCSV(CONFIG.studentsCsv);
-        const map = {
-    coder_id: ["No","Coder ID","ID","รหัสนักเรียน","coder_id","coder id"],
-    nickname: ["Name","Nickname","Nick name","ชื่อเล่น"],
-    fullname: ["Fullname","Full name","ชื่อ-นามสกุล","ชื่อจริง"],
-    status: ["Status","สถานะ","Enrollment Status"],
-    course_status: ["Status of course","Course","คอร์ส","course_status"],
-    parent_password: ["Parent Password","Parent pass","รหัสผู้ปกครอง"]
-  };
+       const map = {
+  coder_id: ["No","Coder ID","ID","รหัสนักเรียน","coder_id","coder id"],
+  nickname: ["Name","Nickname","Nick name","ชื่อเล่น"],
+  fullname: ["Fullname","Full name","ชื่อ-นามสกุล","ชื่อจริง"],
+  status: ["Status","สถานะ","Enrollment Status"],
+  course_status: ["Status of course","Course","คอร์ส","course_status"],
+  program: ["Program","โปรแกรม","โปรแกรมเรียน"],   // ← เพิ่มบรรทัดนี้
+  parent_password: ["Parent Password","Parent pass","รหัสผู้ปกครอง"]
+};
         state.students = raw.map(r=>{
           const v=(keys)=>pick(r, keys);
           return {
