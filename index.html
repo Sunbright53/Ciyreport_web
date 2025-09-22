@@ -256,6 +256,54 @@
       <div id="modal-note" class="text-xs text-white/60 mt-3"></div>
     </div>
   </div>
+<!-- Modal: Add Student -->
+<div id="modal-add-student" class="fixed inset-0 hidden items-center justify-center z-40 modal-overlay">
+  <div class="w-full max-w-xl mx-4 glass rounded-2xl p-6 relative shadow-strong">
+    <button id="modal-addstudent-close" class="absolute top-3 right-3 px-3 py-1.5 rounded-lg hover:bg-white/10">✕</button>
+    <h3 class="text-xl font-bold mb-1" id="add-student-title">Add Student</h3>
+    <p class="text-sm text-white/70 mb-4" id="add-student-note">Fill student info below</p>
+
+    <form id="form-add-student" class="grid md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm mb-1" id="lbl-stu-coderid">Coder ID</label>
+        <input type="text" name="coder_id" required class="input w-full px-4 py-3 rounded-xl" placeholder="เช่น 6600010"/>
+      </div>
+      <div>
+        <label class="block text-sm mb-1" id="lbl-stu-nickname">Nickname</label>
+        <input type="text" name="nickname" required class="input w-full px-4 py-3 rounded-xl" placeholder="เช่น Putter"/>
+      </div>
+      <div class="md:col-span-2">
+        <label class="block text-sm mb-1" id="lbl-stu-fullname">Full name</label>
+        <input type="text" name="fullname" required class="input w-full px-4 py-3 rounded-xl" placeholder="ชื่อ-นามสกุล"/>
+      </div>
+      <div>
+        <label class="block text-sm mb-1" id="lbl-stu-status">Status</label>
+        <select name="status" class="input w-full px-4 py-3 rounded-xl" required>
+          <option>Enrolled</option>
+          <option>Not re-enrolled</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm mb-1" id="lbl-stu-course">Course</label>
+        <input type="text" name="course_status" class="input w-full px-4 py-3 rounded-xl" placeholder="Rookie / Special" required/>
+      </div>
+      <div class="md:col-span-2">
+        <label class="block text-sm mb-1" id="lbl-stu-program">Program (optional)</label>
+        <input type="text" name="program" class="input w-full px-4 py-3 rounded-xl" placeholder="Python / Scratch / App Lab ..."/>
+      </div>
+      <div class="md:col-span-2">
+        <label class="block text-sm mb-1" id="lbl-stu-parentpass">Parent Password</label>
+        <input type="text" name="parent_password" class="input w-full px-4 py-3 rounded-xl" placeholder="เว้นว่างเพื่อสุ่มให้"/>
+      </div>
+
+      <div class="md:col-span-2 flex items-center justify-end gap-3 mt-2">
+        <button type="button" id="btn-cancel-addstudent" class="px-4 py-3 rounded-xl hover:bg-white/10">Cancel</button>
+        <button id="btn-save-student" class="btn-primary px-5 py-3 rounded-xl font-semibold">Save student</button>
+      </div>
+    </form>
+    <div id="addstudent-hint" class="text-xs text-white/60 mt-3"></div>
+  </div>
+</div>
 
   <!-- Toast -->
   <div id="toast" class="fixed bottom-4 right-4 z-50"></div>
@@ -270,7 +318,7 @@
         students: "https://docs.google.com/spreadsheets/d/1TmQPVH-oM2B6PEam42h-bC0y5mc_Kgxry1EzwTZxkuE/edit?gid=0#gid=0",
         reports: "https://docs.google.com/spreadsheets/d/1TmQPVH-oM2B6PEam42h-bC0y5mc_Kgxry1EzwTZxkuE/edit?gid=1733230311#gid=1733230311"
       },
-      appScriptPostUrl: "https://script.google.com/macros/s/AKfycbzBTUeMQwt8BQPfYfMhX9_X66GJGX9-yX_m5_Ut4WIUscQlubiMgMWk0I6sP4xOFf3h/exec",
+      appScriptPostUrl: "https://script.google.com/macros/s/AKfycbwIbYdDOQ7R40qwK0uZA_OjsYDD3DQy1xMiDkQYAxgn1F-OCDN5yuSnbgUQCjSV3Mjk/exec",
       courseLinks: { rookie:'#', trainee:'#', special:'#' }
     };
 
@@ -309,14 +357,13 @@
         state.loading.students=true;
         const raw=await fetchCSV(CONFIG.studentsCsv);
         const map = {
-          coder_id: ["No","Coder ID","ID","รหัสนักเรียน","coder_id","coder id"],
-          nickname: ["Name","Nickname","Nick name","ชื่อเล่น"],
-          status: ["Status","สถานะ","Enrollment Status"],
-          fullname: ["Fullname","Full name","ชื่อ-นามสกุล","ชื่อจริง"],
-          course_status: ["Status of course","Course","คอร์ส","course_status"],
-          program: ["Program","โปรแกรม","Python","Javascript"],
-          parent_password: ["Parent Password","Parent pass","รหัสผู้ปกครอง"]
-        };
+    coder_id: ["No","Coder ID","ID","รหัสนักเรียน","coder_id","coder id"],
+    nickname: ["Name","Nickname","Nick name","ชื่อเล่น"],
+    fullname: ["Fullname","Full name","ชื่อ-นามสกุล","ชื่อจริง"],
+    status: ["Status","สถานะ","Enrollment Status"],
+    course_status: ["Status of course","Course","คอร์ส","course_status"],
+    parent_password: ["Parent Password","Parent pass","รหัสผู้ปกครอง"]
+  };
         state.students = raw.map(r=>{
           const v=(keys)=>pick(r, keys);
           return {
@@ -613,13 +660,15 @@
     async function submitReport(e){
       e.preventDefault();
       const form=e.target; const coder_id=form.dataset.coder_id;
-      const payload={
-        coder_id, date:form.date.value, course:form.course.value.trim(),
-        lesson:form.lesson.value.trim(), progress_summary:form.progress_summary.value.trim(),
-        skills:form.skills.value.trim(), homework:form.homework.value.trim(),
-        next_plan:form.next_plan.value.trim(), coach_name:form.coach_name.value.trim(),
-        attachments:form.attachments.value.trim()
-      };
+      const payload = {
+  action: 'add_report',
+  coder_id, date:form.date.value, course:form.course.value.trim(),
+  lesson:form.lesson.value.trim(), progress_summary:form.progress_summary.value.trim(),
+  skills:form.skills.value.trim(), homework:form.homework.value.trim(),
+  next_plan:form.next_plan.value.trim(), coach_name:form.coach_name.value.trim(),
+  attachments:form.attachments.value.trim()
+};
+
       const isDemo=CONFIG.appScriptPostUrl.includes('REPLACE_WITH_YOUR_DEPLOYED_ID');
       try{
         if(isDemo){
@@ -697,7 +746,117 @@
       $('#form-report').addEventListener('submit',submitReport);
 
       window.addEventListener('hashchange',router);
+    // --- Add Student events ---
+const btnAddStu = document.getElementById('btn-add-student');
+if(btnAddStu) btnAddStu.onclick = openAddStudentModal;
+
+const btnCloseAddStu = document.getElementById('modal-addstudent-close');
+const btnCancelAddStu = document.getElementById('btn-cancel-addstudent');
+if(btnCloseAddStu) btnCloseAddStu.onclick = closeAddStudentModal;
+if(btnCancelAddStu) btnCancelAddStu.onclick = closeAddStudentModal;
+
+const formAddStu = document.getElementById('form-add-student');
+if(formAddStu) formAddStu.addEventListener('submit', submitAddStudent);
+}
+// ===== Add Student Helpers =====
+function randomPass(len=6){
+  const chars='abcdefghijklmnopqrstuvwxyz0123456789';
+  let s=''; for(let i=0;i<len;i++) s+=chars[Math.floor(Math.random()*chars.length)];
+  return s;
+}
+
+function openAddStudentModal(){
+  if(state.session.role!=='coach'){
+    showAlert(state.lang==='th'?'ฟีเจอร์นี้สำหรับโค้ชเท่านั้น':'This feature is for coaches only','warn');
+    return;
+  }
+  const th = state.lang==='th';
+  // แปลหัวข้อฟอร์มให้ตรงภาษา
+  $('#add-student-title').textContent = th? 'เพิ่มนักเรียนใหม่' : 'Add Student';
+  $('#add-student-note').textContent = th? 'กรอกข้อมูลนักเรียนด้านล่าง' : 'Fill student info below';
+  $('#lbl-stu-coderid').textContent = th? 'รหัสนักเรียน (Coder ID)' : 'Coder ID';
+  $('#lbl-stu-nickname').textContent = th? 'ชื่อเล่น' : 'Nickname';
+  $('#lbl-stu-fullname').textContent = th? 'ชื่อ-นามสกุล' : 'Full name';
+  $('#lbl-stu-status').textContent = th? 'สถานะ' : 'Status';
+  $('#lbl-stu-course').textContent = th? 'คอร์ส' : 'Course';
+  $('#lbl-stu-program').textContent = th? 'โปรแกรม (ถ้ามี)' : 'Program (optional)';
+  $('#lbl-stu-parentpass').textContent = th? 'รหัสผู้ปกครอง' : 'Parent Password';
+  $('#btn-save-student').textContent = th? 'บันทึกนักเรียน' : 'Save student';
+  $('#btn-cancel-addstudent').textContent = th? 'ยกเลิก' : 'Cancel';
+
+  // reset form
+  const f = $('#form-add-student');
+  f.reset();
+  // เติมรหัสผู้ปกครองแบบสุ่มถ้ายังว่าง
+  f.parent_password.value = randomPass();
+  // note ด้านล่าง
+  const isDemo = CONFIG.appScriptPostUrl.includes('REPLACE_WITH_YOUR_DEPLOYED_ID');
+  $('#addstudent-hint').innerHTML = isDemo
+    ? (th? 'หมายเหตุ: ยังไม่ได้ตั้งค่า Apps Script — เดโมโหมด (ข้อมูลจะไม่ถูกเขียนลงชีตจริง)': 'Note: App Script URL not set yet — demo mode (won’t write to real sheet)')
+    : (th? 'ข้อมูลจะถูกส่งไปยัง Apps Script และเพิ่มลงชีต Students' : 'Data will be sent to Apps Script and appended to Students sheet');
+
+  // open modal
+  const m = $('#modal-add-student');
+  m.classList.remove('hidden'); m.classList.add('flex');
+}
+
+function closeAddStudentModal(){
+  const m = $('#modal-add-student');
+  m.classList.add('hidden'); m.classList.remove('flex');
+}
+
+async function submitAddStudent(e){
+  e.preventDefault();
+  const f = e.target;
+  const payload = {
+    action: 'add_student',
+    coder_id: (f.coder_id.value||'').trim(),
+    nickname: (f.nickname.value||'').trim(),
+    fullname: (f.fullname.value||'').trim(),
+    status: (f.status.value||'').trim(),
+    course_status: (f.course_status.value||'').trim(),
+    program: (f.program.value||'').trim(),
+    parent_password: (f.parent_password.value||'').trim() || randomPass()
+  };
+
+  // ตรวจ Coder ID ซ้ำในตารางปัจจุบัน
+  if(state.students.some(s => (s.coder_id||'').toLowerCase() === payload.coder_id.toLowerCase())){
+    showAlert(state.lang==='th'?'มี Coder ID นี้อยู่แล้ว':'This Coder ID already exists','error');
+    return;
+  }
+
+  const isDemo = CONFIG.appScriptPostUrl.includes('REPLACE_WITH_YOUR_DEPLOYED_ID');
+  try{
+    if(isDemo){
+      // อัปเดต state ฝั่งหน้าเว็บ (เดโม)
+      state.students.unshift({
+        coder_id: payload.coder_id,
+        nickname: payload.nickname,
+        fullname: payload.fullname,
+        status: payload.status,
+        course_status: payload.course_status,
+        program: payload.program,
+        parent_password: payload.parent_password
+      });
+      toast(state.lang==='th'?'บันทึกนักเรียน (เดโม) สำเร็จ':'Student saved (demo)', 'success');
+    }else{
+      const body = new URLSearchParams();
+      Object.entries(payload).forEach(([k,v])=>body.append(k,v));
+      const res = await fetch(CONFIG.appScriptPostUrl, { method:'POST', body });
+      if(!res.ok) throw new Error('Save failed');
+
+      toast(state.lang==='th'?'บันทึกนักเรียนสำเร็จ!':'Student saved!', 'success');
+      // โหลด CSV ใหม่เพื่อสะท้อนข้อมูลล่าสุดจากชีต
+      await loadStudents();
     }
+    closeAddStudentModal();
+    // อยู่หน้ารายชื่อนักเรียนก็รีเรนเดอร์ใหม่
+    if((location.hash||'').startsWith('#/coach')) renderCoach();
+  }catch(err){
+    console.error(err);
+    toast(state.lang==='th'?'เกิดข้อผิดพลาดในการเพิ่มนักเรียน':'Error adding student','error');
+  }
+}
 
     async function start(){
       loadSession();
