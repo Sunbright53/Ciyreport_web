@@ -149,52 +149,67 @@
       </section>
 
       <!-- Coach -->
-      <section id="view-coach" class="hidden">
-        <div id="coach-login" class="glass rounded-2xl p-6 md:p-8 shadow-strong">
-          <h2 id="coach-login-title" class="text-2xl font-bold">Coach Login</h2>
-          <p id="coach-login-desc" class="text-white/70 mt-1 text-sm">Enter the coach password</p>
-          <form id="form-coach-login" class="mt-6 grid md:grid-cols-3 gap-4" autocomplete="off">
-            <div class="md:col-span-2">
-              <label id="label-master-pass" class="block text-sm mb-1">รหัสผ่านหลัก</label>
-              <input type="password" name="password" required class="input w-full px-4 py-3 rounded-xl" placeholder="••••••••"/>
-            </div>
-            <div class="md:col-span-1 flex items-end">
-              <button id="btn-coach-login" class="btn-blue w-full px-5 py-3 rounded-xl font-semibold">เข้าสู่ระบบ</button>
-            </div>
-          </form>
-        </div>
+<section id="view-coach" class="hidden">
 
-        <div id="coach-content" class="hidden mt-6 space-y-6">
-          <div class="flex flex-col md:flex-row gap-3 md:items-center md:justify-between">
-            <h3 id="coach-all-students" class="text-xl font-bold">รายชื่อนักเรียนทั้งหมด</h3>
-            <div class="flex items-center gap-2 flex-wrap">
-              <input id="coach-search" class="input px-4 py-3 rounded-xl w-72 max-w-full" placeholder="Search: Coder ID / Nickname / Name"/>
-              <button id="coach-clear" class="px-4 py-3 rounded-xl hover:bg-white/10">Clear</button>
-              <span class="hidden md:inline-block w-px h-6 bg-white/10 mx-1"></span>
-              <button id="btn-open-students" class="px-4 py-3 rounded-xl hover:bg-white/10">Open Students</button>
-              <button id="btn-open-reports" class="px-4 py-3 rounded-xl hover:bg-white/10">Open Reports</button>
-              <button id="btn-add-student" class="btn-primary px-4 py-3 rounded-xl font-semibold ml-1">+ Add Student</button>
-            </div>
-          </div>
-          <div class="glass rounded-2xl p-0 overflow-hidden shadow-strong">
-            <div class="overflow-x-auto">
-              <table class="w-full text-left border border-slate-300 rounded-xl overflow-hidden bg-white">
-                <thead class="table-header">
-                  <tr class="[&>th]:px-4 [&>th]:py-3 select-none">
-                    <th data-sort="coder_id" id="th-coderid" class="cursor-pointer">Coder ID</th>
-                    <th data-sort="nickname" id="th-nickname" class="cursor-pointer">Nickname</th>
-                    <th data-sort="fullname" id="th-fullname" class="cursor-pointer">Full name</th>
-                    <th data-sort="status" id="th-status" class="cursor-pointer">Status</th>
-                    <th data-sort="course_status" id="th-course" class="cursor-pointer">Course</th>
-                    <th id="th-parentpass">Parent Password</th>
-                  </tr>
-                </thead>
-                <tbody id="coach-students"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </section>
+ <div id="coach-auth-guard" class="glass rounded-2xl p-6 md:p-8 shadow-strong hidden">
+  <h2 id="coach-login-title" class="text-2xl font-bold">Coach Login</h2>
+  <p id="coach-login-desc" class="text-white/70 mt-1 text-sm">
+    Please sign in with your email and password.
+  </p>
+
+  <form id="form-coach-login" class="mt-5 grid sm:grid-cols-3 gap-3" autocomplete="off">
+    <div class="sm:col-span-1">
+      <label id="label-coach-email" class="block text-sm mb-1">Email</label>
+      <input id="coach-email" name="email" type="email" required class="input w-full px-4 py-3 rounded-xl" placeholder="you@example.com">
+    </div>
+    <div class="sm:col-span-1">
+      <label id="label-coach-pass" class="block text-sm mb-1">Password</label>
+      <input id="coach-password" name="password" type="password" required class="input w-full px-4 py-3 rounded-xl" placeholder="••••••••">
+    </div>
+    <div class="sm:col-span-1 flex items-end">
+      <button id="btn-coach-login" class="btn-blue w-full px-5 py-3 rounded-xl font-semibold">Sign in</button>
+    </div>
+  </form>
+
+  <div id="coach-login-hint" class="text-xs text-white/60 mt-3">
+    Your account is verified via Apps Script (sheet “Login”).
+  </div>
+</div>
+
+
+  <div id="coach-content" class="hidden mt-6 space-y-6">
+  <div class="glass rounded-2xl p-6 shadow-strong">
+    <div class="flex flex-col md:flex-row md:items-center gap-3 justify-between">
+      <h3 id="coach-all-students" class="text-xl font-bold">All Students</h3>
+      <div class="flex items-center gap-2">
+        <input id="coach-search" class="input px-4 py-2 rounded-xl" placeholder="Search: Coder ID / Nickname / Name" />
+        <button id="coach-clear" class="px-3 py-2 rounded-lg hover:bg-white/10">Clear</button>
+        <button id="btn-open-students" class="btn-blue px-3 py-2 rounded-lg font-semibold">Open Students</button>
+        <button id="btn-open-reports" class="btn-blue px-3 py-2 rounded-lg font-semibold">Open Reports</button>
+        <button id="btn-add-student" class="btn-primary px-3 py-2 rounded-lg font-semibold">+ Add Student</button>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto mt-4">
+      <table class="w-full text-left border border-slate-300 rounded-xl bg-white">
+        <thead class="table-header">
+          <tr class="[&>th]:px-4 [&>th]:py-3">
+            <th id="th-coderid">Coder ID</th>
+            <th id="th-nickname">Nickname</th>
+            <th id="th-fullname">Full name</th>
+            <th id="th-status">Status</th>
+            <th id="th-course">Course</th>
+            <th id="th-parentpass">Parent Password</th>
+          </tr>
+        </thead>
+        <tbody id="coach-students"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</section>
+
+          
 
       <!-- Student Detail -->
       <section id="view-student" class="hidden">
@@ -227,7 +242,7 @@
                   <th id="th-type-2">Session type</th>
                   <th id="th-report-2">Session report</th>
                   <th id="th-feedback-2">Feedback</th>
-                  <th id="th-next-2">Recommandation for next session</th>
+                  <th id="th-next-2">Recommendation for next session</th>
                   <th id="th-link-2">12 Times Progress Report (link)</th>
                 </tr>
               </thead>
@@ -365,16 +380,20 @@
   <script>
     // CONFIG
     const CONFIG = {
-      coachPassword: "Ciy.club@2025",
-      studentsCsv: "https://docs.google.com/spreadsheets/d/e/2PACX-1vT513ZZLUQp5zSHfkcfblFC5G0XrLUUJN6PBdfikUYr938X89Z_04AoN-yOXgczhd5kEdRzmDFjcB5E/pub?gid=0&single=true&output=csv",
-      reportsCsv: "https://docs.google.com/spreadsheets/d/e/2PACX-1vT513ZZLUQp5zSHfkcfblFC5G0XrLUUJN6PBdfikUYr938X89Z_04AoN-yOXgczhd5kEdRzmDFjcB5E/pub?gid=1733230311&single=true&output=csv",
-      sheetLinks: {
-        students: "https://docs.google.com/spreadsheets/d/1TmQPVH-oM2B6PEam42h-bC0y5mc_Kgxry1EzwTZxkuE/edit?gid=0#gid=0",
-        reports: "https://docs.google.com/spreadsheets/d/1TmQPVH-oM2B6PEam42h-bC0y5mc_Kgxry1EzwTZxkuE/edit?gid=1733230311#gid=1733230311"
-      },
-      appScriptPostUrl: "https://script.google.com/macros/s/AKfycbwIbYdDOQ7R40qwK0uZA_OjsYDD3DQy1xMiDkQYAxgn1F-OCDN5yuSnbgUQCjSV3Mjk/exec",
-      courseLinks: { rookie:'#', trainee:'#', special:'#' }
-    };
+  studentsCsv: "https://docs.google.com/spreadsheets/d/e/2PACX-1vT513ZZLUQp5zSHfkcfblFC5G0XrLUUJN6PBdfikUYr938X89Z_04AoN-yOXgczhd5kEdRzmDFjcB5E/pub?gid=0&single=true&output=csv",
+  reportsCsv:  "https://docs.google.com/spreadsheets/d/e/2PACX-1vT513ZZLUQp5zSHfkcfblFC5G0XrLUUJN6PBdfikUYr938X89Z_04AoN-yOXgczhd5kEdRzmDFjcB5E/pub?gid=1733230311&single=true&output=csv",
+  sheetLinks: {
+    students: "https://docs.google.com/spreadsheets/d/1TmQPVH-oM2B6PEam42h-bC0y5mc_Kgxry1EzwTZxkuE/edit?gid=0#gid=0",
+    reports:  "https://docs.google.com/spreadsheets/d/1TmQPVH-oM2B6PEam42h-bC0y5mc_Kgxry1EzwTZxkuE/edit?gid=1733230311#gid=1733230311"
+  },
+  appScriptPostUrl: "https://script.google.com/macros/s/AKfycbwIbYdDOQ7R40qwK0uZA_OjsYDD3DQy1xMiDkQYAxgn1F-OCDN5yuSnbgUQCjSV3Mjk/exec",
+  courseLinks: { rookie:'#', trainee:'#', special:'#' },   // 👈 ใส่ comma ตรงนี้
+  auth: {
+    webAppUrl: "https://script.google.com/macros/s/AKfycbz0krDgxFnYS5YHy-vT_uRLxfq7H5JXF1ybHDPMK96xWmANV2iLiW49ADPknXJePg-8/exec"
+  }
+};
+
+
 
     // STATE
     const state = {
@@ -412,6 +431,61 @@
     function shortCodeFor(s){const name=(s.nickname||'').replace(/[^A-Za-zก-ฮะ-์]/g,'').toUpperCase();const letters=(name+'XYZ').slice(0,3);const digits=((s.coder_id||'').match(/\d+/g)||['000']).join('').slice(-3)||'000';return letters+digits}
     function pick(obj, keys=[]){for(const k of keys){if(!k)continue;const v=(obj[k]??'').toString().trim();if(v) return v}return ''}
 
+
+ // ===================== AUTH FUNCTIONS ===================== //
+
+// ล็อกอินโค้ชด้วย email + password → เรียกไปที่ Apps Script
+async function loginCoach(email, password){
+  const base = (CONFIG.auth && CONFIG.auth.webAppUrl) || "";
+  if (!base) return { ok:false, error:"Auth URL not set" };
+
+  try {
+    const res = await fetch(base, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({
+        action: "login",
+        email: email,
+        password: password
+      })
+    });
+    if (!res.ok) throw new Error("Login request failed");
+    return await res.json();  // { ok:true/false, role:"coach"/null, email, error? }
+  } catch (e) {
+    console.warn("loginCoach error:", e);
+    return { ok:false, error:e.message || "Login error" };
+  }
+}
+
+// จัดการฟอร์มโค้ชกดล็อกอิน
+async function handleCoachLogin(e){
+  e.preventDefault();
+  const form = e.target;
+  const email = (form.email.value || '').trim();
+  const password = (form.password.value || '').trim();
+  if(!email || !password) return;
+
+  try{
+    const resp = await loginCoach(email, password);
+    if(resp && resp.ok && resp.role === 'coach'){
+      state.session = { role: 'coach', parentId: null };
+      saveSession();
+      toast(state.lang==='th' ? 'เข้าสู่ระบบสำเร็จ' : 'Signed in', 'success');
+      await renderCoach();
+    } else {
+      const msg = (resp && resp.error) ||
+        (state.lang==='th' ? 'อีเมลหรือรหัสผ่านไม่ถูกต้อง' : 'Invalid email or password');
+      showAlert(msg, 'error');
+    }
+  } catch(err){
+    console.error(err);
+    showAlert(state.lang==='th' ? 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ' : 'Login error', 'error');
+  }
+}
+
+
+    
     // CSV fetch
     async function fetchCSV(url){const res=await fetch(url,{cache:'no-store'});if(!res.ok) throw new Error('Failed to load');return parseCSV(await res.text())}
 
@@ -468,7 +542,7 @@
           type: ["session type","Session type","class type","ประเภทคาบ"],
           report: ["session report","Session report","report","progress_summary","Progress Summary","summary","สรุป"],
           feedback: ["feedback","ความคิดเห็น","ข้อเสนอแนะ","comment","คอมเมนต์"],
-          next_reco: ["Recommandation for next session","Recommendation for next session","next recommendation","next session plan","next_plan","Next Plan","แผนถัดไป"],
+          next_reco: ["Recommendation for next session","Recommendation for next session","next recommendation","next session plan","next_plan","Next Plan","แผนถัดไป"],
           link12: ["12 Times Progress Report (link)","12 times link","progress link","link","attachments","attachment","แนบ"],
 
           // legacy fallbacks
@@ -513,7 +587,6 @@
     // SESSION
     function saveSession(){sessionStorage.setItem('ciy_session',JSON.stringify(state.session));renderSessionBox()}
     function loadSession(){try{const s=JSON.parse(sessionStorage.getItem('ciy_session')||'{}');if(s&&(s.role==='coach'||s.role==='parent')) state.session=s;}catch{} renderSessionBox()}
-    function logout(){state.session={role:null,parentId:null};saveSession();location.hash='#/'}
     function renderSessionBox(){
       const box=$('#sessionBox'); box.innerHTML='';
       if(state.session.role){
@@ -527,77 +600,96 @@
     }
 
     // I18N
-    function applyLanguage(){
-      const th=state.lang==='th'; document.documentElement.setAttribute('lang', th?'th':'en');
-      $('#nav-home').textContent = th?'หน้าแรก':'Home';
-      $('#nav-parent').textContent = th?'ผู้ปกครอง':'Parent';
-      $('#nav-coach').textContent = th?'โค้ช':'Coach';
+function setTextSafe(sel, text) {
+  const node = document.querySelector(sel);
+  if (node) node.textContent = text;
+}
 
-      // Landing
-      $('#landing-title').textContent = th ? 'ระบบรายงานนักเรียน CIY' : 'Welcome to CIY.CLUB Student Reports';
-      $('#landing-desc').textContent = th ? 'ระบบติดตามความก้าวหน้านักเรียน CIY.CLUB' : 'CIY.CLUB Student Progress Tracking System';
-      $('#landing-parent-btn').textContent = th?'เข้าสู่ระบบผู้ปกครอง':'Parent Login';
-      $('#landing-coach-btn').textContent = th?'เข้าสู่ระบบโค้ช':'Coach Login';
+function applyLanguage(){
+  const th = state.lang === 'th';
+  document.documentElement.setAttribute('lang', th ? 'th' : 'en');
+  // ใน applyLanguage()
+setTextSafe('#coach-login-title', th ? 'เข้าสู่ระบบโค้ช' : 'Coach Login');
+setTextSafe('#coach-login-desc',  th ? 'กรุณาเข้าสู่ระบบด้วยอีเมลและรหัสผ่าน' : 'Please sign in with your email and password.');
+setTextSafe('#label-coach-email', th ? 'อีเมล' : 'Email');
+setTextSafe('#label-coach-pass',  th ? 'รหัสผ่าน' : 'Password');
+setTextSafe('#btn-coach-login',   th ? 'เข้าสู่ระบบ' : 'Sign in');
+document.getElementById('coach-email')?.setAttribute('placeholder', th?'you@example.com':'you@example.com');
+document.getElementById('coach-password')?.setAttribute('placeholder', '••••••••');
 
-      // Parent
-      $('#parent-login-title').textContent = th?'เข้าสู่ระบบผู้ปกครอง':'Parent Login';
-      $('#parent-login-desc').textContent = th?'กรอกรหัสนักเรียนและรหัสผู้ปกครอง':'Enter Coder ID and Parent Password';
-      $('#label-coder-id').textContent = th?'รหัสนักเรียน (Coder ID)':'Coder ID';
-      $('#label-parent-pass').textContent = th?'รหัสผู้ปกครอง':'Parent Password';
-      $('#btn-parent-login').textContent = th?'เข้าสู่ระบบ':'Log in';
-      document.querySelector('#form-parent-login [name="coder_id"]').placeholder = th?'เช่น 6600001':'e.g., 6600001';
 
-      // Tables
-      $('#parent-past-reports').textContent = th?'รายงานที่ผ่านมา':'Past Reports';
-      $('#th-date-1').textContent = th?'วันที่':'Date';
-      $('#th-course-1').textContent = th?'หัวข้อ':'Topic';
-      $('#th-lesson-1').textContent = th?'บทเรียน':'Lesson';
-      $('#th-summary-1').textContent = th?'สรุป':'Summary';
-      $('#th-coach-1').textContent = th?'โค้ช':'Coach';
-      $('#th-attach-1').textContent = th?'ไฟล์แนบ':'Attachment';
+  // Navbar
+  setTextSafe('#nav-home', th ? 'หน้าแรก' : 'Home');
+  setTextSafe('#nav-parent', th ? 'ผู้ปกครอง' : 'Parent');
+  setTextSafe('#nav-coach', th ? 'โค้ช' : 'Coach');
 
-      $('#coach-login-title').textContent = th?'เข้าสู่ระบบโค้ช':'Coach Login';
-      $('#coach-login-desc').textContent = th?'กรอกรหัสผ่านสำหรับโค้ช':'Enter the coach password';
-      $('#label-master-pass').textContent = th?'รหัสผ่านหลัก':'Master Password';
-      $('#btn-coach-login').textContent = th?'เข้าสู่ระบบ':'Log in';
-      $('#coach-all-students').textContent = th?'รายชื่อนักเรียนทั้งหมด':'All Students';
-      $('#coach-search').placeholder = th?'ค้นหา: Coder ID / ชื่อเล่น / ชื่อจริง':'Search: Coder ID / Nickname / Name';
-      $('#coach-clear').textContent = th?'ล้าง':'Clear';
-      $('#btn-open-students').textContent = th?'เปิดชีต Students':'Open Students';
-      $('#btn-open-reports').textContent = th?'เปิดชีต Reports':'Open Reports';
-      $('#btn-add-student').textContent = th?'+ เพิ่มนักเรียน':'+ Add Student';
-      $('#th-coderid').textContent = 'Coder ID';
-      $('#th-nickname').textContent = th?'ชื่อเล่น':'Nickname';
-      $('#th-fullname').textContent = th?'ชื่อ-นามสกุล':'Full name';
-      $('#th-status').textContent = th?'สถานะ':'Status';
-      $('#th-course').textContent = th?'คอร์ส':'Course';
-      $('#th-parentpass').textContent = th?'รหัสผู้ปกครอง':'Parent Password';
+  // Landing
+  setTextSafe('#landing-title', th ? 'ระบบรายงานนักเรียน CIY' : 'Welcome to CIY.CLUB Student Reports');
+  setTextSafe('#landing-desc', th ? 'ระบบติดตามความก้าวหน้านักเรียน CIY.CLUB' : 'CIY.CLUB Student Progress Tracking System');
+  setTextSafe('#landing-parent-btn', th ? 'เข้าสู่ระบบผู้ปกครอง' : 'Parent Login');
+  setTextSafe('#landing-coach-btn', th ? 'เข้าสู่ระบบโค้ช' : 'Coach Login');
 
-      $('#btn-back-coach').textContent = th?'← ย้อนกลับ':'← Back';
-      $('#student-title').textContent = th?'ข้อมูลนักเรียน':'Student Detail';
-      $('#btn-add-report').textContent = th?'+ เพิ่มรายงาน':'+ Add Report';
-      $('#student-all-reports').textContent = th?'รายงานทั้งหมด':'All Reports';
-      $('#th-no-2').textContent       = th ? 'ลำดับ' : 'No';
-      $('#th-date-2').textContent     = th ? 'วันที่' : 'Date';
-      $('#th-time-2').textContent     = th ? 'เวลา' : 'Time';
-      $('#th-topic-2').textContent    = th ? 'หัวข้อ' : 'Topic';
-      $('#th-incharge-2').textContent = th ? 'ผู้รับผิดชอบคาบ' : 'Session incharge';
-      $('#th-type-2').textContent     = th ? 'ประเภทคาบ' : 'Session type';
-      $('#th-report-2').textContent   = th ? 'สรุปคาบเรียน' : 'Session report';
-      $('#th-feedback-2').textContent = th ? 'ข้อเสนอแนะ' : 'Feedback';
-      $('#th-next-2').textContent     = th ? 'แผนครั้งถัดไป' : 'Recommandation for next session';
-      $('#th-link-2').textContent     = th ? 'ลิงก์รายงาน 12 ครั้ง' : '12 Times Progress Report (link)';
+  // Parent
+  setTextSafe('#parent-login-title', th ? 'เข้าสู่ระบบผู้ปกครอง' : 'Parent Login');
+  setTextSafe('#parent-login-desc', th ? 'กรอกรหัสนักเรียนและรหัสผู้ปกครอง' : 'Enter Coder ID and Parent Password');
+  setTextSafe('#label-coder-id', th ? 'รหัสนักเรียน (Coder ID)' : 'Coder ID');
+  setTextSafe('#label-parent-pass', th ? 'รหัสผู้ปกครอง' : 'Parent Password');
+  setTextSafe('#btn-parent-login', th ? 'เข้าสู่ระบบ' : 'Log in');
 
-      // Flags opacity
-      const tgl = document.getElementById('toggle-lang');
-      if (tgl) {
-        const isTH = th;
-        tgl.querySelector('.flag-th').style.opacity = isTH ? '1' : '0.35';
-        tgl.querySelector('.flag-en').style.opacity = isTH ? '0.35' : '1';
-        tgl.querySelector('.flag-th').style.filter = isTH ? 'none' : 'grayscale(1)';
-        tgl.querySelector('.flag-en').style.filter = isTH ? 'grayscale(1)' : 'none';
-      }
-    }
+  const coderInput = document.querySelector('#form-parent-login [name="coder_id"]');
+  if (coderInput) coderInput.placeholder = th ? 'เช่น 6600001' : 'e.g., 6600001';
+
+  // Parent table
+  setTextSafe('#parent-past-reports', th ? 'รายงานที่ผ่านมา' : 'Past Reports');
+  setTextSafe('#th-date-1', th ? 'วันที่' : 'Date');
+  setTextSafe('#th-course-1', th ? 'หัวข้อ' : 'Topic');
+  setTextSafe('#th-lesson-1', th ? 'บทเรียน' : 'Lesson');
+  setTextSafe('#th-summary-1', th ? 'สรุป' : 'Summary');
+  setTextSafe('#th-coach-1', th ? 'โค้ช' : 'Coach');
+  setTextSafe('#th-attach-1', th ? 'ไฟล์แนบ' : 'Attachment');
+
+  // Coach section
+  setTextSafe('#coach-all-students', th ? 'รายชื่อนักเรียนทั้งหมด' : 'All Students');
+  const coachSearch = document.querySelector('#coach-search');
+  if (coachSearch) coachSearch.placeholder = th ? 'ค้นหา: Coder ID / ชื่อเล่น / ชื่อจริง' : 'Search: Coder ID / Nickname / Name';
+  setTextSafe('#coach-clear', th ? 'ล้าง' : 'Clear');
+  setTextSafe('#btn-open-students', th ? 'เปิดชีต Students' : 'Open Students');
+  setTextSafe('#btn-open-reports', th ? 'เปิดชีต Reports' : 'Open Reports');
+  setTextSafe('#btn-add-student', th ? '+ เพิ่มนักเรียน' : '+ Add Student');
+  setTextSafe('#th-coderid', 'Coder ID');
+  setTextSafe('#th-nickname', th ? 'ชื่อเล่น' : 'Nickname');
+  setTextSafe('#th-fullname', th ? 'ชื่อ-นามสกุล' : 'Full name');
+  setTextSafe('#th-status', th ? 'สถานะ' : 'Status');
+  setTextSafe('#th-course', th ? 'คอร์ส' : 'Course');
+  setTextSafe('#th-parentpass', th ? 'รหัสผู้ปกครอง' : 'Parent Password');
+
+  // Student detail
+  setTextSafe('#btn-back-coach', th ? '← ย้อนกลับ' : '← Back');
+  setTextSafe('#student-title', th ? 'ข้อมูลนักเรียน' : 'Student Detail');
+  setTextSafe('#btn-add-report', th ? '+ เพิ่มรายงาน' : '+ Add Report');
+  setTextSafe('#student-all-reports', th ? 'รายงานทั้งหมด' : 'All Reports');
+  setTextSafe('#th-no-2', th ? 'ลำดับ' : 'No');
+  setTextSafe('#th-date-2', th ? 'วันที่' : 'Date');
+  setTextSafe('#th-time-2', th ? 'เวลา' : 'Time');
+  setTextSafe('#th-topic-2', th ? 'หัวข้อ' : 'Topic');
+  setTextSafe('#th-incharge-2', th ? 'ผู้รับผิดชอบคาบ' : 'Session incharge');
+  setTextSafe('#th-type-2', th ? 'ประเภทคาบ' : 'Session type');
+  setTextSafe('#th-report-2', th ? 'สรุปคาบเรียน' : 'Session report');
+  setTextSafe('#th-feedback-2', th ? 'ข้อเสนอแนะ' : 'Feedback');
+  setTextSafe('#th-next-2', th ? 'แผนครั้งถัดไป' : 'Recommendation for next session');
+  setTextSafe('#th-link-2', th ? 'ลิงก์รายงาน 12 ครั้ง' : '12 Times Progress Report (link)');
+
+  // Flag opacity
+  const tgl = document.getElementById('toggle-lang');
+  if (tgl) {
+    const isTH = th;
+    tgl.querySelector('.flag-th').style.opacity = isTH ? '1' : '0.35';
+    tgl.querySelector('.flag-en').style.opacity = isTH ? '0.35' : '1';
+    tgl.querySelector('.flag-th').style.filter = isTH ? 'none' : 'grayscale(1)';
+    tgl.querySelector('.flag-en').style.filter = isTH ? 'grayscale(1)' : 'none';
+  }
+}
+
 
     // RENDERERS
     function renderLanding(){showView('view-landing')}
@@ -650,46 +742,113 @@
       }
     }
 
-    function renderCoach(){
-      showView('view-coach');
-      const isLogged = state.session.role==='coach';
-      $('#coach-login').classList.toggle('hidden', isLogged);
-      $('#coach-content').classList.toggle('hidden', !isLogged);
-      if (!isLogged) return;
+    async function renderCoach(){
+  showView('view-coach');
 
-      const q=($('#coach-search').value||'').trim().toLowerCase();
-      let list=state.students.slice();
-      if(q){
-        list=list.filter(s=>
-          (s.coder_id||'').toLowerCase().includes(q)||
-          (s.nickname||'').toLowerCase().includes(q)||
-          (s.fullname||'').toLowerCase().includes(q)||
-          (s.program||'').toLowerCase().includes(q)
-        );
-      }
-      const {key,dir}=state.sort;
-      list.sort((a,b)=>{const av=(a[key]||'').toString().toLowerCase(), bv=(b[key]||'').toString().toLowerCase(); if(av<bv) return dir==='asc'?-1:1; if(av>bv) return dir==='asc'?1:-1; return 0;});
-      const tbody=$('#coach-students');
-      if(state.loading.students){tbody.innerHTML=loadingRow(6);return;}
-      if(list.length===0){tbody.innerHTML=emptyRow(state.lang==='th'?'ไม่พบนักเรียนที่ค้นหา':'No matching students',6);return;}
-      tbody.innerHTML = list.map(s=>`
-        <tr class="row-hover cursor-pointer" data-id="${s.coder_id}">
-          <td class="px-4 py-3">${s.coder_id}</td>
-          <td class="px-4 py-3">
-            <div>${s.nickname || '-'}</div>
-            <div class="text-xs text-white/50 mt-0.5">Code: ${shortCodeFor(s)}</div>
-          </td>
-          <td class="px-4 py-3">${s.fullname || '-'}</td>
-          <td class="px-4 py-3">${statusBadge(s.status)}</td>
-          <td class="px-4 py-3">${s.course_status || '-'}</td>
-          <td class="px-4 py-3">${s.parent_password ? `<span class="px-2 py-1 rounded-lg pill text-xs">${s.parent_password}</span>` : `<span class="text-xs text-red-300">${state.lang==='th'?'ไม่มีรหัสผู้ปกครอง':'No parent pass'}</span>`}</td>
-        </tr>
-      `).join('');
-      Array.from(tbody.querySelectorAll('tr')).forEach(tr=>tr.addEventListener('click',()=>{location.hash=`#/student/${tr.getAttribute('data-id')}`}));
-      document.querySelectorAll('thead th[data-sort]').forEach(th=>{
-        th.onclick=()=>{ const k=th.getAttribute('data-sort'); if(state.sort.key===k) state.sort.dir=state.sort.dir==='asc'?'desc':'asc'; else {state.sort.key=k;state.sort.dir='asc'}; renderCoach(); };
-      });
+  const guard   = document.getElementById('coach-auth-guard');
+  const content = document.getElementById('coach-content');
+  if (content) content.classList.add('hidden');
+  if (guard)   guard.classList.remove('hidden');
+
+  // 1) ใช้ local session ก่อน
+  let authed = (state.session && state.session.role === 'coach');
+
+  // 2) ถ้า local ยังไม่ authed → ค่อยเช็คกับ Apps Script
+  if (!authed) {
+    try {
+      const auth = await checkCoachAuth();   // {ok, role, email?}
+      authed = !!(auth && auth.ok && auth.role === 'coach');
+    } catch (e) {
+      console.warn('checkCoachAuth error:', e);
     }
+  }
+
+  if (!authed) {
+    // แสดงฟอร์ม login
+    state.session = { role: null, parentId: null };
+    saveSession();
+    const emailEl = document.getElementById('coach-email');
+    if (emailEl) emailEl.focus();
+    return;
+  }
+
+  // ถ้า authed แล้ว
+  state.session = { role: 'coach', parentId: null };
+  saveSession();
+  if (guard)   guard.classList.add('hidden');
+  if (content) content.classList.remove('hidden');
+
+  // ====== Render ตารางนักเรียน ======
+  const searchEl = document.getElementById('coach-search');
+  const q = (searchEl && searchEl.value || '').trim().toLowerCase();
+
+  let list = state.students.slice();
+  if (q){
+    list = list.filter(s =>
+      (s.coder_id||'').toLowerCase().includes(q) ||
+      (s.nickname||'').toLowerCase().includes(q) ||
+      (s.fullname||'').toLowerCase().includes(q) ||
+      (s.program||'').toLowerCase().includes(q)
+    );
+  }
+
+  const { key, dir } = state.sort;
+  list.sort((a,b)=>{
+    const av=(a[key]||'').toString().toLowerCase();
+    const bv=(b[key]||'').toString().toLowerCase();
+    if(av<bv) return dir==='asc' ? -1 : 1;
+    if(av>bv) return dir==='asc' ?  1 : -1;
+    return 0;
+  });
+
+  const tbody = document.getElementById('coach-students');
+  if (!tbody) return;
+
+  if (state.loading.students){
+    tbody.innerHTML = loadingRow(6);
+    return;
+  }
+  if (list.length===0){
+    tbody.innerHTML = emptyRow(state.lang==='th'?'ไม่พบนักเรียนที่ค้นหา':'No matching students',6);
+    return;
+  }
+
+  tbody.innerHTML = list.map(s=> `
+    <tr class="row-hover cursor-pointer" data-id="${s.coder_id}">
+      <td class="px-4 py-3">${s.coder_id}</td>
+      <td class="px-4 py-3">
+        <div>${s.nickname || '-'}</div>
+        <div class="text-xs text-white/50 mt-0.5">Code: ${shortCodeFor(s)}</div>
+      </td>
+      <td class="px-4 py-3">${s.fullname || '-'}</td>
+      <td class="px-4 py-3">${statusBadge(s.status)}</td>
+      <td class="px-4 py-3">${s.course_status || '-'}</td>
+      <td class="px-4 py-3">${
+        s.parent_password
+          ? `<span class="px-2 py-1 rounded-lg pill text-xs">${s.parent_password}</span>`
+          : `<span class="text-xs text-red-300">${state.lang==='th'?'ไม่มีรหัสผู้ปกครอง':'No parent pass'}</span>`
+      }</td>
+    </tr>
+  `).join('');
+
+  // คลิกแถวเพื่อไปหน้า student
+  Array.from(tbody.querySelectorAll('tr')).forEach(tr=>{
+    tr.addEventListener('click',()=>{ 
+      location.hash = `#/student/${tr.getAttribute('data-id')}`;
+    });
+  });
+
+  // (ถ้ามีหัวตารางที่ใส่ data-sort จะผูกเหตุการณ์ให้—ถ้าไม่มีจะข้าม)
+  document.querySelectorAll('thead th[data-sort]').forEach(th=>{
+    th.onclick=()=>{
+      const k=th.getAttribute('data-sort');
+      if(state.sort.key===k) state.sort.dir = state.sort.dir==='asc' ? 'desc' : 'asc';
+      else { state.sort.key=k; state.sort.dir='asc'; }
+      renderCoach();
+    };
+  });
+}
+
 
     // NEW: Render Student Detail (fixed & self-contained)
     function renderStudentDetail(id){
@@ -947,63 +1106,156 @@
         toast(state.lang==='th'?'เกิดข้อผิดพลาดในการเพิ่มนักเรียน':'Error adding student','error');
       }
     }
+// ===== AUTH via Apps Script =====
+async function checkCoachAuth() {
+  const base = (CONFIG.auth && CONFIG.auth.webAppUrl) || "";
+  if (!base || base.includes("YOUR_WEB_APP_URL")) {
+    console.warn("Apps Script auth URL not set yet.");
+    return { ok: false, role: null, email: null };
+  }
+  try {
+    const url = base + "?action=whoami";
+    const res = await fetch(url, { credentials: "include", cache: "no-store" });
+    if (!res.ok) throw new Error("Auth check failed");
+    const data = await res.json(); // { ok:true/false, role:"coach"/null, email:"..." }
+    return data;
+  } catch (e) {
+    console.warn("checkCoachAuth error:", e);
+    return { ok: false, role: null, email: null };
+  }
+}
+
+function openCoachSignin() {
+  const base = (CONFIG.auth && CONFIG.auth.webAppUrl) || "";
+  if (!base || base.includes("YOUR_WEB_APP_URL")) {
+    showAlert(
+      state.lang === 'th'
+        ? 'ยังไม่ได้ตั้งค่า Apps Script Web App URL ใน CONFIG.auth.webAppUrl'
+        : 'Apps Script Web App URL is not set in CONFIG.auth.webAppUrl',
+      'warn'
+    );
+    return;
+  }
+  window.open(base + "?action=login", "_blank", "noopener");
+}
+async function coachSignOut() {
+  const base = (CONFIG.auth && CONFIG.auth.webAppUrl) || "";
+  if (!base) return;
+  try {
+    await fetch(base + "?action=logout", { credentials: "include" });
+  } catch (e) {
+    console.warn("coachSignOut error:", e);
+  }
+}
+
+async function logout(){
+  await coachSignOut(); // ตัด session ที่ฝั่ง Apps Script ด้วย
+  state.session = { role:null, parentId:null };
+  saveSession();
+  location.hash = '#/';
+}
+
 
     // Router
-    function router(){
-      const hash=location.hash||'#/';
-      if(hash==='#/'||hash==='#'){renderLanding();}
-      else if(hash.startsWith('#/parent')){
-        if (state.session.role==='parent' && state.session.parentId){
-          location.hash = `#/student/${state.session.parentId}`;
-        } else {
-          renderParent();
-        }
-      }
-      else if(hash.startsWith('#/coach')){renderCoach();}
-      else if(hash.startsWith('#/student/')){const m=hash.match(/^#\/student\/(.+)$/); if(m) renderStudentDetail(m[1]); else renderLanding();}
-      else renderLanding();
+    // Router
+async function router(){
+  const hash = location.hash || "#/";
+  if(hash==="#/" || hash==="#"){ 
+    renderLanding(); 
+  }
+  else if(hash.startsWith('#/parent')){
+    if (state.session.role==='parent' && state.session.parentId){
+      location.hash = `#/student/${state.session.parentId}`;
+    } else {
+      renderParent();
     }
+  }
+  else if(hash.startsWith('#/coach')){
+    await renderCoach(); // ✅ รอเช็คสิทธิ์ก่อน
+  }
+  else if(hash.startsWith('#/student/')){
+    const m = hash.match(/^#\/student\/(.+)$/);
+    if(m) renderStudentDetail(m[1]); else renderLanding();
+  }
+  else renderLanding();
+}
+
 
     // Events
-    function bindEvents(){
-      $('#nav-home').onclick=()=>location.hash='#/';
-      $('#nav-parent').onclick=()=>location.hash='#/parent';
-      $('#nav-coach').onclick=()=>location.hash='#/coach';
+   function bindEvents(){
+  $('#nav-home').onclick=()=>location.hash='#/';
+  $('#nav-parent').onclick=()=>location.hash='#/parent';
+  $('#nav-coach').onclick=()=>location.hash='#/coach';
 
-      const toggleBtn=document.getElementById('toggle-lang');
-      if(toggleBtn) toggleBtn.onclick=()=>{
-        state.lang=state.lang==='th'?'en':'th';
-        sessionStorage.setItem('ciy_lang',state.lang);
-        applyLanguage(); router();
-      };
-      const tgl=document.getElementById('toggle-lang'); if(tgl){const isTH=state.lang==='th'; tgl.querySelector('.flag-th').style.opacity=isTH?'1':'0.35'; tgl.querySelector('.flag-en').style.opacity=isTH?'0.35':'1'; tgl.querySelector('.flag-th').style.filter=isTH?'none':'grayscale(1)'; tgl.querySelector('.flag-en').style.filter=isTH?'grayscale(1)':'none';}
+  const toggleBtn=document.getElementById('toggle-lang');
+  if(toggleBtn) toggleBtn.onclick=()=>{
+    state.lang=state.lang==='th'?'en':'th';
+    sessionStorage.setItem('ciy_lang',state.lang);
+    applyLanguage(); router();
+  };
+  const tgl=document.getElementById('toggle-lang'); 
+  if(tgl){
+    const isTH=state.lang==='th'; 
+    tgl.querySelector('.flag-th').style.opacity=isTH?'1':'0.35'; 
+    tgl.querySelector('.flag-en').style.opacity=isTH?'0.35':'1'; 
+    tgl.querySelector('.flag-th').style.filter=isTH?'none':'grayscale(1)'; 
+    tgl.querySelector('.flag-en').style.filter=isTH?'grayscale(1)':'none';
+  }
 
-      $('#form-parent-login').addEventListener('submit',handleParentLogin);
-      $('#form-coach-login').addEventListener('submit',handleCoachLogin);
+  // Parent login
+  const formParent = document.getElementById('form-parent-login');
+  if(formParent) formParent.addEventListener('submit',handleParentLogin);
 
-      $('#coach-search').addEventListener('input',()=>renderCoach());
-      $('#coach-clear').addEventListener('click',()=>{$('#coach-search').value='';renderCoach();});
+  // Coach login (ใหม่: email+password)
+  const formCoach = document.getElementById('form-coach-login');
+  if(formCoach) formCoach.addEventListener('submit',handleCoachLogin);
 
-      const openSheet=(type)=>{const links=CONFIG.sheetLinks||{}; const url=type==='students'?links.students:links.reports; if(!url){toast(state.lang==='th'?'ยังไม่ได้ตั้งค่าลิงก์ชีต':'Sheet link not set','error');return;} window.open(url,'_blank');};
-      $('#btn-open-students').onclick=()=>openSheet('students');
-      $('#btn-open-reports').onclick=()=>openSheet('reports');
+  // Coach search/clear
+  const coachSearch = document.getElementById('coach-search');
+  if(coachSearch) coachSearch.addEventListener('input',()=>renderCoach());
+  const coachClear = document.getElementById('coach-clear');
+  if(coachClear) coachClear.addEventListener('click',()=>{
+    if(coachSearch) coachSearch.value='';
+    renderCoach();
+  });
 
-      $('#modal-close').onclick=closeModal;
-      $('#btn-cancel-report').onclick=closeModal;
-      $('#form-report').addEventListener('submit',submitReport);
-
-      // Add Student modal controls
-      const btnAddStu = document.getElementById('btn-add-student');
-      if(btnAddStu) btnAddStu.onclick = openAddStudentModal;
-      const btnCloseAddStu = document.getElementById('modal-addstudent-close');
-      const btnCancelAddStu = document.getElementById('btn-cancel-addstudent');
-      if(btnCloseAddStu) btnCloseAddStu.onclick = closeAddStudentModal;
-      if(btnCancelAddStu) btnCancelAddStu.onclick = closeAddStudentModal;
-      const formAddStu = document.getElementById('form-add-student');
-      if(formAddStu) formAddStu.addEventListener('submit', submitAddStudent);
-
-      window.addEventListener('hashchange',router);
+  // Open Sheets
+  const openSheet=(type)=>{
+    const links=CONFIG.sheetLinks||{};
+    const url=type==='students'?links.students:links.reports;
+    if(!url){
+      toast(state.lang==='th'?'ยังไม่ได้ตั้งค่าลิงก์ชีต':'Sheet link not set','error');
+      return;
     }
+    window.open(url,'_blank');
+  };
+  const btnOpenStudents = document.getElementById('btn-open-students');
+  if(btnOpenStudents) btnOpenStudents.onclick=()=>openSheet('students');
+  const btnOpenReports = document.getElementById('btn-open-reports');
+  if(btnOpenReports) btnOpenReports.onclick=()=>openSheet('reports');
+
+  // Report modal
+  const btnModalClose = document.getElementById('modal-close');
+  if(btnModalClose) btnModalClose.onclick=closeModal;
+  const btnCancelReport = document.getElementById('btn-cancel-report');
+  if(btnCancelReport) btnCancelReport.onclick=closeModal;
+  const formReport = document.getElementById('form-report');
+  if(formReport) formReport.addEventListener('submit',submitReport);
+
+  // Add Student modal
+  const btnAddStu = document.getElementById('btn-add-student');
+  if(btnAddStu) btnAddStu.onclick = openAddStudentModal;
+  const btnCloseAddStu = document.getElementById('modal-addstudent-close');
+  if(btnCloseAddStu) btnCloseAddStu.onclick = closeAddStudentModal;
+  const btnCancelAddStu = document.getElementById('btn-cancel-addstudent');
+  if(btnCancelAddStu) btnCancelAddStu.onclick = closeAddStudentModal;
+  const formAddStu = document.getElementById('form-add-student');
+  if(formAddStu) formAddStu.addEventListener('submit', submitAddStudent);
+
+  window.addEventListener('hashchange',router);
+
+}
+
 
     // Auth handlers
     async function handleParentLogin(e){
@@ -1021,12 +1273,7 @@
       location.hash = `#/student/${s.coder_id}`;
 
     }
-    function handleCoachLogin(e){
-      e.preventDefault();
-      const pass=(new FormData(e.target).get('password')||'').toString();
-      if(pass!==CONFIG.coachPassword){showAlert(state.lang==='th'?'รหัสผ่านโค้ชไม่ถูกต้อง':'Incorrect coach password','error');return;}
-      state.session={role:'coach',parentId:null}; saveSession(); renderCoach();
-    }
+  
 
     // Start
     async function start(){
