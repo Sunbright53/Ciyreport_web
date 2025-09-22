@@ -727,10 +727,9 @@
             <td class="px-4 py-3">${r.topic || r.course || '-'}</td>
             <td class="px-4 py-3">${r.session_incharge || r.coach_name || '-'}</td>
             <td class="px-4 py-3">${r.session_type || '-'}</td>
-            <td class="px-4 py-3 max-w-[420px]"><div class="line-clamp-2">${r.session_report || r.progress_summary || '-'}</div></td>
-            <td class="px-4 py-3 max-w-[420px]"><div class="line-clamp-2">${r.feedback || '-'}</div></td>
-            <td class="px-4 py-3 max-w-[420px]"><div class="line-clamp-2">${r.next_recommend || r.next_plan || '-'}</div></td>
-            <td class="px-4 py-3">${linkOrDash(r.link12 || r.attachments)}</td>
+            <td class="px-4 py-3 max-w-[420px]"> <div>${r.session_report || r.progress_summary || '--'}</div></td>
+            <td class="px-4 py-3 max-w-[420px]"><div>${r.feedback || '--'}</div></td>
+            <td class="px-4 py-3 max-w-[420px]"><div>${r.next_recommend || r.next_plan || '--'}</div></td>
           </tr>
         `).join('');
       }
