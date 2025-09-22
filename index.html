@@ -189,12 +189,16 @@
             <table class="w-full text-left border border-slate-300 rounded-xl overflow-hidden bg-white">
               <thead class="table-header">
                 <tr class="[&>th]:px-4 [&>th]:py-3">
+                  <th id="th-no-2">No</th>
                   <th id="th-date-2">Date</th>
-                  <th id="th-course-2">Topic</th>
-                  <th id="th-lesson-2">Lesson</th>
-                  <th id="th-summary-2">Summary</th>
-                  <th id="th-coach-2">Coach</th>
-                  <th id="th-attach-2">Attachment</th>
+                  <th id="th-time-2">Time</th>
+                  <th id="th-topic-2">Topic</th>
+                  <th id="th-incharge-2">Session incharge</th>
+                  <th id="th-type-2">Session type</th>
+                  <th id="th-report-2">Session report</th>
+                  <th id="th-feedback-2">Feedback</th>
+                  <th id="th-next-2">Recommandation for next session</th>
+                  <th id="th-link-2">12 Times Progress Report (link)</th>
                 </tr>
               </thead>
               <tbody id="student-reports"></tbody>
@@ -217,37 +221,48 @@
           <input type="date" name="date" required class="input w-full px-4 py-3 rounded-xl"/>
         </div>
         <div>
-          <label id="lbl-course" class="block text-sm mb-1">Course</label>
-          <input type="text" name="course" required class="input w-full px-4 py-3 rounded-xl" placeholder="เช่น Rookie / Special / Trainee"/>
+          <label class="block text-sm mb-1">Time</label>
+          <input type="text" name="time" class="input w-full px-4 py-3 rounded-xl" placeholder="e.g., 09:00–10:00"/>
         </div>
         <div>
-          <label id="lbl-lesson" class="block text-sm mb-1">Lesson</label>
-          <input type="text" name="lesson" required class="input w-full px-4 py-3 rounded-xl" placeholder="Lesson topic"/>
+          <label class="block text-sm mb-1">Topic</label>
+          <input type="text" name="topic" required class="input w-full px-4 py-3 rounded-xl" placeholder="python / scratch …"/>
         </div>
         <div>
-          <label id="lbl-coachname" class="block text-sm mb-1">Coach Name</label>
-          <input type="text" name="coach_name" required class="input w-full px-4 py-3 rounded-xl" placeholder="Coach name"/>
+          <label class="block text-sm mb-1">Session incharge</label>
+          <input type="text" name="session_incharge" required class="input w-full px-4 py-3 rounded-xl" placeholder="Coach name"/>
+        </div>
+        <div>
+          <label class="block text-sm mb-1">Session type</label>
+          <input type="text" name="session_type" class="input w-full px-4 py-3 rounded-xl" placeholder="python / project / …"/>
         </div>
         <div class="md:col-span-2">
-          <label id="lbl-summary" class="block text-sm mb-1">Progress Summary</label>
-          <textarea name="progress_summary" required class="input w-full px-4 py-3 rounded-xl min-h-[80px]" placeholder="What was achieved"></textarea>
-        </div>
-        <div>
-          <label id="lbl-skills" class="block text-sm mb-1">Skills</label>
-          <textarea name="skills" class="input w-full px-4 py-3 rounded-xl min-h-[80px]" placeholder="Skills practiced"></textarea>
-        </div>
-        <div>
-          <label id="lbl-homework" class="block text-sm mb-1">Homework</label>
-          <textarea name="homework" class="input w-full px-4 py-3 rounded-xl min-h-[80px]" placeholder="Homework"></textarea>
+          <label class="block text-sm mb-1">Session report</label>
+          <textarea name="session_report" required class="input w-full px-4 py-3 rounded-xl min-h-[80px]" placeholder="What was achieved?"></textarea>
         </div>
         <div class="md:col-span-2">
-          <label id="lbl-nextplan" class="block text-sm mb-1">Next Plan</label>
-          <textarea name="next_plan" class="input w-full px-4 py-3 rounded-xl min-h-[80px]" placeholder="Plan for next session"></textarea>
+          <label class="block text-sm mb-1">Feedback</label>
+          <textarea name="feedback" class="input w-full px-4 py-3 rounded-xl min-h-[80px]" placeholder="-"></textarea>
         </div>
         <div class="md:col-span-2">
-          <label id="lbl-attachments" class="block text-sm mb-1">Attachments</label>
-          <input type="url" name="attachments" class="input w-full px-4 py-3 rounded-xl" placeholder="https://..."/>
+          <label class="block text-sm mb-1">Recommendation for next session</label>
+          <textarea name="next_recommend" class="input w-full px-4 py-3 rounded-xl min-h-[80px]" placeholder="Plan for next session"></textarea>
         </div>
+        <div class="md:col-span-2">
+          <label class="block text-sm mb-1">12 Times Progress Report (link) / Attachments</label>
+          <input type="url" name="link12" class="input w-full px-4 py-3 rounded-xl" placeholder="https://..."/>
+        </div>
+
+        <!-- hidden legacy fields to keep backward-compat when posting -->
+        <input type="hidden" name="course">
+        <input type="hidden" name="lesson">
+        <input type="hidden" name="progress_summary">
+        <input type="hidden" name="skills">
+        <input type="hidden" name="homework">
+        <input type="hidden" name="next_plan">
+        <input type="hidden" name="coach_name">
+        <input type="hidden" name="attachments">
+
         <div class="md:col-span-2 flex items-center justify-end gap-3">
           <button type="button" id="btn-cancel-report" class="px-4 py-3 rounded-xl hover:bg-white/10">Cancel</button>
           <button id="btn-save-report" class="btn-primary px-5 py-3 rounded-xl font-semibold">Save report</button>
@@ -256,54 +271,55 @@
       <div id="modal-note" class="text-xs text-white/60 mt-3"></div>
     </div>
   </div>
-<!-- Modal: Add Student -->
-<div id="modal-add-student" class="fixed inset-0 hidden items-center justify-center z-40 modal-overlay">
-  <div class="w-full max-w-xl mx-4 glass rounded-2xl p-6 relative shadow-strong">
-    <button id="modal-addstudent-close" class="absolute top-3 right-3 px-3 py-1.5 rounded-lg hover:bg-white/10">✕</button>
-    <h3 class="text-xl font-bold mb-1" id="add-student-title">Add Student</h3>
-    <p class="text-sm text-white/70 mb-4" id="add-student-note">Fill student info below</p>
 
-    <form id="form-add-student" class="grid md:grid-cols-2 gap-4">
-      <div>
-        <label class="block text-sm mb-1" id="lbl-stu-coderid">Coder ID</label>
-        <input type="text" name="coder_id" required class="input w-full px-4 py-3 rounded-xl" placeholder="เช่น 6600010"/>
-      </div>
-      <div>
-        <label class="block text-sm mb-1" id="lbl-stu-nickname">Nickname</label>
-        <input type="text" name="nickname" required class="input w-full px-4 py-3 rounded-xl" placeholder="เช่น Putter"/>
-      </div>
-      <div class="md:col-span-2">
-        <label class="block text-sm mb-1" id="lbl-stu-fullname">Full name</label>
-        <input type="text" name="fullname" required class="input w-full px-4 py-3 rounded-xl" placeholder="ชื่อ-นามสกุล"/>
-      </div>
-      <div>
-        <label class="block text-sm mb-1" id="lbl-stu-status">Status</label>
-        <select name="status" class="input w-full px-4 py-3 rounded-xl" required>
-          <option>Enrolled</option>
-          <option>Not re-enrolled</option>
-        </select>
-      </div>
-      <div>
-        <label class="block text-sm mb-1" id="lbl-stu-course">Course</label>
-        <input type="text" name="course_status" class="input w-full px-4 py-3 rounded-xl" placeholder="Rookie / Special" required/>
-      </div>
-      <div class="md:col-span-2">
-        <label class="block text-sm mb-1" id="lbl-stu-program">Program (optional)</label>
-        <input type="text" name="program" class="input w-full px-4 py-3 rounded-xl" placeholder="Python / Scratch / App Lab ..."/>
-      </div>
-      <div class="md:col-span-2">
-        <label class="block text-sm mb-1" id="lbl-stu-parentpass">Parent Password</label>
-        <input type="text" name="parent_password" class="input w-full px-4 py-3 rounded-xl" placeholder="เว้นว่างเพื่อสุ่มให้"/>
-      </div>
+  <!-- Modal: Add Student -->
+  <div id="modal-add-student" class="fixed inset-0 hidden items-center justify-center z-40 modal-overlay">
+    <div class="w-full max-w-xl mx-4 glass rounded-2xl p-6 relative shadow-strong">
+      <button id="modal-addstudent-close" class="absolute top-3 right-3 px-3 py-1.5 rounded-lg hover:bg-white/10">✕</button>
+      <h3 class="text-xl font-bold mb-1" id="add-student-title">Add Student</h3>
+      <p class="text-sm text-white/70 mb-4" id="add-student-note">Fill student info below</p>
 
-      <div class="md:col-span-2 flex items-center justify-end gap-3 mt-2">
-        <button type="button" id="btn-cancel-addstudent" class="px-4 py-3 rounded-xl hover:bg-white/10">Cancel</button>
-        <button id="btn-save-student" class="btn-primary px-5 py-3 rounded-xl font-semibold">Save student</button>
-      </div>
-    </form>
-    <div id="addstudent-hint" class="text-xs text-white/60 mt-3"></div>
+      <form id="form-add-student" class="grid md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm mb-1" id="lbl-stu-coderid">Coder ID</label>
+          <input type="text" name="coder_id" required class="input w-full px-4 py-3 rounded-xl" placeholder="เช่น 6600010"/>
+        </div>
+        <div>
+          <label class="block text-sm mb-1" id="lbl-stu-nickname">Nickname</label>
+          <input type="text" name="nickname" required class="input w-full px-4 py-3 rounded-xl" placeholder="เช่น Putter"/>
+        </div>
+        <div class="md:col-span-2">
+          <label class="block text-sm mb-1" id="lbl-stu-fullname">Full name</label>
+          <input type="text" name="fullname" required class="input w-full px-4 py-3 rounded-xl" placeholder="ชื่อ-นามสกุล"/>
+        </div>
+        <div>
+          <label class="block text-sm mb-1" id="lbl-stu-status">Status</label>
+          <select name="status" class="input w-full px-4 py-3 rounded-xl" required>
+            <option>Enrolled</option>
+            <option>Not re-enrolled</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm mb-1" id="lbl-stu-course">Course</label>
+          <input type="text" name="course_status" class="input w-full px-4 py-3 rounded-xl" placeholder="Rookie / Special" required/>
+        </div>
+        <div class="md:col-span-2">
+          <label class="block text-sm mb-1" id="lbl-stu-program">Program (optional)</label>
+          <input type="text" name="program" class="input w-full px-4 py-3 rounded-xl" placeholder="Python / Scratch / App Lab ..."/>
+        </div>
+        <div class="md:col-span-2">
+          <label class="block text-sm mb-1" id="lbl-stu-parentpass">Parent Password</label>
+          <input type="text" name="parent_password" class="input w-full px-4 py-3 rounded-xl" placeholder="เว้นว่างเพื่อสุ่มให้"/>
+        </div>
+
+        <div class="md:col-span-2 flex items-center justify-end gap-3 mt-2">
+          <button type="button" id="btn-cancel-addstudent" class="px-4 py-3 rounded-xl hover:bg-white/10">Cancel</button>
+          <button id="btn-save-student" class="btn-primary px-5 py-3 rounded-xl font-semibold">Save student</button>
+        </div>
+      </form>
+      <div id="addstudent-hint" class="text-xs text-white/60 mt-3"></div>
+    </div>
   </div>
-</div>
 
   <!-- Toast -->
   <div id="toast" class="fixed bottom-4 right-4 z-50"></div>
@@ -356,15 +372,15 @@
       try{
         state.loading.students=true;
         const raw=await fetchCSV(CONFIG.studentsCsv);
-       const map = {
-  coder_id: ["No","Coder ID","ID","รหัสนักเรียน","coder_id","coder id"],
-  nickname: ["Name","Nickname","Nick name","ชื่อเล่น"],
-  fullname: ["Fullname","Full name","ชื่อ-นามสกุล","ชื่อจริง"],
-  status: ["Status","สถานะ","Enrollment Status"],
-  course_status: ["Status of course","Course","คอร์ส","course_status"],
-  program: ["Program","โปรแกรม","โปรแกรมเรียน"],   // ← เพิ่มบรรทัดนี้
-  parent_password: ["Parent Password","Parent pass","รหัสผู้ปกครอง"]
-};
+        const map = {
+          coder_id: ["No","Coder ID","ID","รหัสนักเรียน","coder_id","coder id"],
+          nickname: ["Name","Nickname","Nick name","ชื่อเล่น"],
+          fullname: ["Fullname","Full name","ชื่อ-นามสกุล","ชื่อจริง"],
+          status: ["Status","สถานะ","Enrollment Status"],
+          course_status: ["Status of course","Course","คอร์ส","course_status"],
+          program: ["Program","โปรแกรม","โปรแกรมเรียน"],
+          parent_password: ["Parent Password","Parent pass","รหัสผู้ปกครอง"]
+        };
         state.students = raw.map(r=>{
           const v=(keys)=>pick(r, keys);
           return {
@@ -381,7 +397,7 @@
       finally{ state.loading.students=false; }
     }
 
-    // FLEXIBLE REPORT HEADERS (accepts coach_name and coach _name, course or topic, optional lesson)
+    // Reports loader with flexible headers
     function rVal(row, candidates){
       for(const key of candidates){
         if (key in row && typeof row[key] !== 'undefined') {
@@ -391,38 +407,59 @@
       }
       return '';
     }
-
     async function loadReports(){
       try{
-        state.loading.reports=true;
-        const raw=await fetchCSV(CONFIG.reportsCsv);
-        // Define candidate headers for each field
+        state.loading.reports = true;
+        const raw = await fetchCSV(CONFIG.reportsCsv);
         const H = {
           coder_id: ["coder_id","Coder ID","id","No","รหัสนักเรียน","coder id"],
-          date: ["date","วันที่","Date"],
-          course: ["course","topic","หัวข้อ","Course","Topic"],
-          lesson: ["lesson","บทเรียน","Lesson"],
-          progress_summary: ["progress_summary","summary","สรุป","Progress Summary"],
-          skills: ["skills","ทักษะ","Skills"],
-          homework: ["homework","การบ้าน","Homework"],
-          next_plan: ["next_plan","next plan","แผนถัดไป","Next Plan"],
+          date: ["date","Date","วันที่"],
+          time: ["time","Time","เวลา"],
+          topic: ["topic","Topic","หัวข้อ","course","Course"],
+          incharge: ["session incharge","Session incharge","session in-charge","incharge","coach","Coach","coach_name","Coach Name","ผู้สอน","ผู้รับผิดชอบคาบ"],
+          type: ["session type","Session type","class type","ประเภทคาบ"],
+          report: ["session report","Session report","report","progress_summary","Progress Summary","summary","สรุป"],
+          feedback: ["feedback","ความคิดเห็น","ข้อเสนอแนะ","comment","คอมเมนต์"],
+          next_reco: ["Recommandation for next session","Recommendation for next session","next recommendation","next session plan","next_plan","Next Plan","แผนถัดไป"],
+          link12: ["12 Times Progress Report (link)","12 times link","progress link","link","attachments","attachment","แนบ"],
+
+          // legacy fallbacks
+          course: ["course","Course","topic","Topic"],
+          lesson: ["lesson","Lesson","บทเรียน"],
+          progress_summary: ["progress_summary","summary","สรุป","Session report"],
+          skills: ["skills","Skills","ทักษะ"],
+          homework: ["homework","Homework","การบ้าน"],
+          next_plan: ["next_plan","Next Plan","แผนถัดไป"],
           coach_name: ["coach_name","coach _name","coach name","coach","Coach Name"],
           attachments: ["attachments","attachment","แนบ","Attachment"]
         };
-        state.reports = raw.map(r=>({
-          coder_id: rVal(r,H.coder_id),
-          date: rVal(r,H.date),
-          course: rVal(r,H.course),
-          lesson: rVal(r,H.lesson),
-          progress_summary: rVal(r,H.progress_summary),
-          skills: rVal(r,H.skills),
-          homework: rVal(r,H.homework),
-          next_plan: rVal(r,H.next_plan),
-          coach_name: rVal(r,H.coach_name),
-          attachments: rVal(r,H.attachments)
-        })).filter(x=>x.coder_id);
-      } catch(e){ console.warn('Reports load failed:', e); }
-      finally{ state.loading.reports=false; }
+
+        state.reports = raw.map(r => ({
+          coder_id: rVal(r, H.coder_id),
+          date: rVal(r, H.date),
+          time: rVal(r, H.time),
+          topic: rVal(r, H.topic) || rVal(r, H.course),
+          session_incharge: rVal(r, H.incharge) || rVal(r, H.coach_name),
+          session_type: rVal(r, H.type) || rVal(r, H.course),
+          session_report: rVal(r, H.report) || rVal(r, H.progress_summary),
+          feedback: rVal(r, H.feedback),
+          next_recommend: rVal(r, H.next_reco) || rVal(r, H.next_plan),
+          link12: rVal(r, H.link12) || rVal(r, H.attachments),
+
+          course: rVal(r, H.course),
+          lesson: rVal(r, H.lesson),
+          progress_summary: rVal(r, H.progress_summary),
+          skills: rVal(r, H.skills),
+          homework: rVal(r, H.homework),
+          next_plan: rVal(r, H.next_plan),
+          coach_name: rVal(r, H.coach_name),
+          attachments: rVal(r, H.attachments)
+        })).filter(x => x.coder_id);
+      } catch(e){
+        console.warn('Reports load failed:', e);
+      } finally {
+        state.loading.reports = false;
+      }
     }
 
     // SESSION
@@ -492,14 +529,18 @@
       $('#student-title').textContent = th?'ข้อมูลนักเรียน':'Student Detail';
       $('#btn-add-report').textContent = th?'+ เพิ่มรายงาน':'+ Add Report';
       $('#student-all-reports').textContent = th?'รายงานทั้งหมด':'All Reports';
-      $('#th-date-2').textContent = th?'วันที่':'Date';
-      $('#th-course-2').textContent = th?'หัวข้อ':'Topic';
-      $('#th-lesson-2').textContent = th?'บทเรียน':'Lesson';
-      $('#th-summary-2').textContent = th?'สรุป':'Summary';
-      $('#th-coach-2').textContent = th?'โค้ช':'Coach';
-      $('#th-attach-2').textContent = th?'ไฟล์แนบ':'Attachment';
+      $('#th-no-2').textContent       = th ? 'ลำดับ' : 'No';
+      $('#th-date-2').textContent     = th ? 'วันที่' : 'Date';
+      $('#th-time-2').textContent     = th ? 'เวลา' : 'Time';
+      $('#th-topic-2').textContent    = th ? 'หัวข้อ' : 'Topic';
+      $('#th-incharge-2').textContent = th ? 'ผู้รับผิดชอบคาบ' : 'Session incharge';
+      $('#th-type-2').textContent     = th ? 'ประเภทคาบ' : 'Session type';
+      $('#th-report-2').textContent   = th ? 'สรุปคาบเรียน' : 'Session report';
+      $('#th-feedback-2').textContent = th ? 'ข้อเสนอแนะ' : 'Feedback';
+      $('#th-next-2').textContent     = th ? 'แผนครั้งถัดไป' : 'Recommandation for next session';
+      $('#th-link-2').textContent     = th ? 'ลิงก์รายงาน 12 ครั้ง' : '12 Times Progress Report (link)';
 
-      // Update flags visual
+      // Flags opacity
       const tgl = document.getElementById('toggle-lang');
       if (tgl) {
         const isTH = th;
@@ -510,8 +551,9 @@
       }
     }
 
-    // RENDER
+    // RENDERERS
     function renderLanding(){showView('view-landing')}
+
     function renderParent(){
       showView('view-parent');
       const isLogged = state.session.role==='parent' && !!state.session.parentId;
@@ -536,13 +578,13 @@
             <div class="text-white/70 mt-1">${s.fullname || '-'}</div>
             <div class="mt-3 grid sm:grid-cols-2 gap-3">
               <div class="p-3 rounded-xl bg-white/5 border border-white/10">${state.lang==='th'?'โปรแกรม':'Program'}: <span class="font-semibold">${s.program || '-'}</span></div>
-              <div class="p-3 rounded-xl bg-white/5 border border-white/10">${state.lang==='th'?'รหัสผู้ปกครอง':'Parent Password'}: <span class="font-semibold">${s.parent_password}</span></div>
+              <div class="p-3 rounded-xl bg-white/5 border border-white/10">${state.lang==='th'?'รหัสผู้ปกครอง':'Parent Password'}: <span class="font-semibold">••••••</span></div>
             </div>
           </div>
         </div>
       `;
       const tbody=$('#parent-reports');
-      tbody.innerHTML = state.loading.reports ? loadingRow() : '';
+      tbody.innerHTML = state.loading.reports ? loadingRow(6) : '';
       const reports = state.reports.filter(r=>r.coder_id===s.coder_id).sort((a,b)=>dateFromAny(b.date)-dateFromAny(a.date));
       $('#report-count').textContent = `${reports.length} ${state.lang==='th'?'รายการ':'items'}`;
       if (!state.loading.reports && reports.length===0) tbody.innerHTML = emptyRow(state.lang==='th'?'ยังไม่มีรายงาน':'No reports yet',6);
@@ -550,15 +592,16 @@
         tbody.innerHTML = reports.map(r=>`
           <tr class="row-hover">
             <td class="px-4 py-3">${fmtDate(r.date)}</td>
-            <td class="px-4 py-3">${r.course || '-'}</td>
+            <td class="px-4 py-3">${r.course || r.topic || '-'}</td>
             <td class="px-4 py-3">${r.lesson || '-'}</td>
-            <td class="px-4 py-3 max-w-[420px]"><div class="line-clamp-2">${r.progress_summary || '-'}</div></td>
-            <td class="px-4 py-3">${r.coach_name || '-'}</td>
-            <td class="px-4 py-3">${linkOrDash(r.attachments)}</td>
+            <td class="px-4 py-3 max-w-[420px]"><div class="line-clamp-2">${r.progress_summary || r.session_report || '-'}</div></td>
+            <td class="px-4 py-3">${r.coach_name || r.session_incharge || '-'}</td>
+            <td class="px-4 py-3">${linkOrDash(r.attachments || r.link12)}</td>
           </tr>
         `).join('');
       }
     }
+
     function renderCoach(){
       showView('view-coach');
       const isLogged = state.session.role==='coach';
@@ -594,61 +637,115 @@
           <td class="px-4 py-3">${s.parent_password ? `<span class="px-2 py-1 rounded-lg pill text-xs">${s.parent_password}</span>` : `<span class="text-xs text-red-300">${state.lang==='th'?'ไม่มีรหัสผู้ปกครอง':'No parent pass'}</span>`}</td>
         </tr>
       `).join('');
-      Array.from(tbody.querySelectorAll('tr')).forEach(tr=>tr.addEventListener('click',()=>{location.hash=`#/student/${tr.getAttribute('data-id')}`}));      
+      Array.from(tbody.querySelectorAll('tr')).forEach(tr=>tr.addEventListener('click',()=>{location.hash=`#/student/${tr.getAttribute('data-id')}`}));
       document.querySelectorAll('thead th[data-sort]').forEach(th=>{
         th.onclick=()=>{ const k=th.getAttribute('data-sort'); if(state.sort.key===k) state.sort.dir=state.sort.dir==='asc'?'desc':'asc'; else {state.sort.key=k;state.sort.dir='asc'}; renderCoach(); };
       });
     }
+
+    // NEW: Render Student Detail (fixed & self-contained)
     function renderStudentDetail(id){
       showView('view-student');
       $('#coach-actions').classList.toggle('hidden', state.session.role!=='coach');
-      $('#btn-back-coach').onclick=()=>{location.hash='#/coach'};
-      const s=state.students.find(x=>x.coder_id===id);
-      $('#student-title').textContent = s ? (state.lang==='th'?'ข้อมูลนักเรียน':'Student Detail') : (state.lang==='th'?'ไม่พบนักเรียน':'Student');
-      const profile=$('#student-profile');
-      if(!s){ profile.innerHTML=`<div class="text-white/70">${state.lang==='th'?'ไม่พบนักเรียน':'Student not found'}</div>`; }
-      else{
-        const status=(s.status||'').toLowerCase().includes('enrolled') && !(s.status||'').toLowerCase().includes('not') ? 'Enrolled' : ((s.status||'').toLowerCase().includes('not') ? 'Not re-enrolled' : (s.status||'Unknown'));
-        profile.innerHTML=`
-          <div class="flex flex-col sm:flex-row gap-4">
-            <div class="w-16 h-16 rounded-2xl flex items-center justify-center" style="background:#1a2a66;"><span class="text-2xl font-extrabold">${(s.nickname||'?').slice(0,1).toUpperCase()}</span></div>
-            <div class="flex-1">
-              <div class="flex flex-wrap items-center gap-2">
-                <div class="text-2xl font-bold">${s.nickname} <span class="text-white/50 font-medium">(${s.coder_id})</span></div>
-                ${statusBadge(s.status)}
-                <span class="text-xs px-2.5 py-1 rounded-full badge-blue">${s.course_status || 'N/A'}</span>
-                <span class="text-xs px-2.5 py-1 rounded-full bg-white/10 border border-white/15 text-white/80">Code: ${shortCodeFor(s)}</span>
-                ${state.session.role==='coach' ? `<span class="text-xs px-2.5 py-1 rounded-full bg-white/10 border border-white/15 text-white/80">${state.lang==='th'?'ผู้ปกครอง':'Parent'}: ${s.parent_password || '0000'}</span>`:``}
+      $('#btn-back-coach').onclick = ()=> history.back();
+
+      const s = state.students.find(x=> (x.coder_id||'').toLowerCase() === (id||'').toLowerCase());
+      const profileBox = $('#student-profile');
+      if(!s){ profileBox.innerHTML = `<div class="text-white/70">${state.lang==='th'?'ไม่พบนักเรียน':'Student not found'}</div>`; return; }
+
+      profileBox.innerHTML = `
+        <div class="flex gap-4 items-start">
+          <div class="w-16 h-16 rounded-2xl flex items-center justify-center" style="background:#1a2a66;">
+            <span class="text-2xl font-extrabold">${(s.nickname||'?').slice(0,1).toUpperCase()}</span>
+          </div>
+          <div class="flex-1">
+            <div class="flex flex-wrap items-center gap-2">
+              <div class="text-2xl font-bold">${s.nickname} <span class="text-white/50 font-medium">(${s.coder_id})</span></div>
+              ${statusBadge(s.status)}
+              <span class="text-xs px-2.5 py-1 rounded-full badge-blue">${s.course_status || 'N/A'}</span>
+              <span class="text-xs px-2.5 py-1 rounded-full bg-white/10 border border-white/15 text-white/80">Code: ${shortCodeFor(s)}</span>
+            </div>
+            <div class="text-white/70 mt-1">${s.fullname || '-'}</div>
+            <div class="mt-3 grid sm:grid-cols-3 gap-3">
+              <div class="p-3 rounded-xl bg-white/5 border border-white/10">${state.lang==='th'?'โปรแกรม':'Program'}: <span class="font-semibold">${s.program || '-'}</span></div>
+              <div class="p-3 rounded-xl bg-white/5 border border-white/10 flex items-center gap-2">
+                <span>${state.lang==='th'?'รหัสผู้ปกครอง':'Parent Password'}:</span>
+                <span id="ppass-val" data-val="${s.parent_password||''}">••••••</span>
+                <button id="ppass-toggle" class="px-2 py-1 rounded-lg hover:bg-white/10 text-sm">${state.lang==='th'?'แสดง':'Show'}</button>
+                <button id="ppass-copy" class="px-2 py-1 rounded-lg hover:bg-white/10 text-sm">${state.lang==='th'?'คัดลอก':'Copy'}</button>
               </div>
-              <div class="text-white/70 mt-1">${s.fullname || '-'}</div>
+              <div class="p-3 rounded-xl bg-white/5 border border-white/10">${state.lang==='th'?'สถานะ':'Status'}: <span class="font-semibold">${s.status || '-'}</span></div>
             </div>
           </div>
-        `;
+        </div>
+      `;
+
+      // Bind show/hide/copy after DOM is in place
+      if (state.session.role === 'coach') {
+        const pVal = document.getElementById('ppass-val');
+        const btnToggle = document.getElementById('ppass-toggle');
+        const btnCopy = document.getElementById('ppass-copy');
+        if (pVal && btnToggle) {
+          let shown = false;
+          btnToggle.addEventListener('click', () => {
+            shown = !shown;
+            pVal.textContent = shown ? (pVal.dataset.val || '') : '••••••';
+            btnToggle.textContent = shown
+              ? (state.lang==='th' ? 'ซ่อน' : 'Hide')
+              : (state.lang==='th' ? 'แสดง' : 'Show');
+          });
+        }
+        if (pVal && btnCopy) {
+          btnCopy.addEventListener('click', async () => {
+            try {
+              await navigator.clipboard.writeText(pVal.dataset.val || '');
+              toast(state.lang==='th' ? 'คัดลอกแล้ว' : 'Copied!', 'success');
+            } catch {
+              toast(state.lang==='th' ? 'คัดลอกไม่สำเร็จ' : 'Copy failed', 'error');
+            }
+          });
+        }
       }
+
+      // Reports table
       const tbody=$('#student-reports');
-      tbody.innerHTML = state.loading.reports ? loadingRow() : '';
-      const reports=state.reports.filter(r=>r.coder_id===id).sort((a,b)=>dateFromAny(b.date)-dateFromAny(a.date));
-      $('#student-report-count').textContent = `${reports.length} ${state.lang==='th'?'รายการ':'items'}`;
-      if(!state.loading.reports && reports.length===0){tbody.innerHTML=emptyRow(state.lang==='th'?'ยังไม่มีรายงาน':'No reports yet',6)}
-      else if(!state.loading.reports){
-        tbody.innerHTML = reports.map(r=>`
+      tbody.innerHTML = state.loading.reports ? loadingRow(10) : '';
+      const rep = state.reports
+        .filter(r => (r.coder_id||'').toLowerCase() === (s.coder_id||'').toLowerCase())
+        .sort((a,b)=> (dateFromAny(b.date) - dateFromAny(a.date)));
+
+      $('#student-report-count').textContent = `${rep.length} ${state.lang==='th'?'รายการ':'items'}`;
+
+      if(!state.loading.reports && rep.length===0){
+        tbody.innerHTML = emptyRow(state.lang==='th'?'ยังไม่มีรายงาน':'No reports yet', 10);
+      }else if(!state.loading.reports){
+        tbody.innerHTML = rep.map((r,i)=>`
           <tr class="row-hover">
+            <td class="px-4 py-3">${i+1}</td>
             <td class="px-4 py-3">${fmtDate(r.date)}</td>
-            <td class="px-4 py-3">${r.course || '-'}</td>
-            <td class="px-4 py-3">${r.lesson || '-'}</td>
-            <td class="px-4 py-3 max-w-[420px]"><div class="line-clamp-2">${r.progress_summary || '-'}</div></td>
-            <td class="px-4 py-3">${r.coach_name || '-'}</td>
-            <td class="px-4 py-3">${linkOrDash(r.attachments)}</td>
+            <td class="px-4 py-3">${r.time || '-'}</td>
+            <td class="px-4 py-3">${r.topic || r.course || '-'}</td>
+            <td class="px-4 py-3">${r.session_incharge || r.coach_name || '-'}</td>
+            <td class="px-4 py-3">${r.session_type || '-'}</td>
+            <td class="px-4 py-3 max-w-[420px]"><div class="line-clamp-2">${r.session_report || r.progress_summary || '-'}</div></td>
+            <td class="px-4 py-3 max-w-[420px]"><div class="line-clamp-2">${r.feedback || '-'}</div></td>
+            <td class="px-4 py-3 max-w-[420px]"><div class="line-clamp-2">${r.next_recommend || r.next_plan || '-'}</div></td>
+            <td class="px-4 py-3">${linkOrDash(r.link12 || r.attachments)}</td>
           </tr>
         `).join('');
       }
+
+      // Add report button
       $('#btn-add-report').onclick=()=>openReportModal(s);
     }
 
     // View control
-    function showView(id){['view-landing','view-parent','view-coach','view-student'].forEach(v=>document.getElementById(v).classList.add('hidden')); document.getElementById(id).classList.remove('hidden')}
+    function showView(id){
+      ['view-landing','view-parent','view-coach','view-student'].forEach(v=>document.getElementById(v).classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+    }
 
-    // Modal: Add Report (frontend-only save UI; real save uses Apps Script)
+    // Modal: Add Report
     function openReportModal(student){
       if(state.session.role!=='coach'){ showAlert(state.lang==='th'?'ฟีเจอร์นี้สำหรับโค้ชเท่านั้น':'This feature is for coaches only','warn'); return; }
       $('#modal-student').textContent = `${state.lang==='th'?'สำหรับ':'For'}: ${student.nickname} (${student.coder_id})`;
@@ -658,53 +755,144 @@
       $('#modal').classList.remove('hidden'); $('#modal').classList.add('flex');
     }
     function closeModal(){ $('#modal').classList.add('hidden'); $('#modal').classList.remove('flex'); }
+
     async function submitReport(e){
       e.preventDefault();
-      const form=e.target; const coder_id=form.dataset.coder_id;
-      const payload = {
-  action: 'add_report',
-  coder_id, date:form.date.value, course:form.course.value.trim(),
-  lesson:form.lesson.value.trim(), progress_summary:form.progress_summary.value.trim(),
-  skills:form.skills.value.trim(), homework:form.homework.value.trim(),
-  next_plan:form.next_plan.value.trim(), coach_name:form.coach_name.value.trim(),
-  attachments:form.attachments.value.trim()
-};
+      const form = e.target;
+      const coder_id = form.dataset.coder_id;
 
-      const isDemo=CONFIG.appScriptPostUrl.includes('REPLACE_WITH_YOUR_DEPLOYED_ID');
+      // new schema
+      const newPayload = {
+        action: 'add_report',
+        coder_id,
+        date: (form.date.value||'').trim(),
+        time: (form.time.value||'').trim(),
+        topic: (form.topic.value||'').trim(),
+        session_incharge: (form.session_incharge.value||'').trim(),
+        session_type: (form.session_type.value||'').trim(),
+        session_report: (form.session_report.value||'').trim(),
+        feedback: (form.feedback.value||'').trim(),
+        next_recommend: (form.next_recommend.value||'').trim(),
+        link12: (form.link12.value||'').trim()
+      };
+
+      // legacy mapping
+      const legacy = {
+        course: newPayload.topic,
+        lesson: '',
+        progress_summary: newPayload.session_report,
+        skills: '',
+        homework: '',
+        next_plan: newPayload.next_recommend,
+        coach_name: newPayload.session_incharge,
+        attachments: newPayload.link12
+      };
+
+      const payload = { ...newPayload, ...legacy };
+      const isDemo = CONFIG.appScriptPostUrl.includes('REPLACE_WITH_YOUR_DEPLOYED_ID');
+
       try{
         if(isDemo){
-          state.reports.unshift({...payload});
+          state.reports.unshift({ ...payload });
           toast(state.lang==='th'?'บันทึกสำเร็จ (เดโม)':'Saved (demo)', 'success');
         }else{
-          const body=new URLSearchParams(); Object.entries(payload).forEach(([k,v])=>body.append(k,v));
-          const res=await fetch(CONFIG.appScriptPostUrl,{method:'POST',body});
+          const body = new URLSearchParams();
+          Object.entries(payload).forEach(([k,v])=> body.append(k, v ?? ''));
+          const res = await fetch(CONFIG.appScriptPostUrl, { method:'POST', body });
           if(!res.ok) throw new Error('Save failed');
           toast(state.lang==='th'?'บันทึกสำเร็จ!':'Saved!','success');
           await loadReports();
         }
         closeModal();
-        const m=(location.hash||'').match(/^#\/student\/(.+)$/); if(m) renderStudentDetail(m[1]);
-      }catch(err){ console.error(err); toast(state.lang==='th'?'เกิดข้อผิดพลาดขณะบันทึก':'Error saving','error'); }
+        const m=(location.hash||'').match(/^#\/student\/(.+)$/);
+        if(m) renderStudentDetail(m[1]);
+      }catch(err){
+        console.error(err);
+        toast(state.lang==='th'?'เกิดข้อผิดพลาดขณะบันทึก':'Error saving','error');
+      }
     }
 
-    // Auth handlers
-    async function handleParentLogin(e){
-      e.preventDefault();
-      const fd=new FormData(e.target);
-      const coder_id=(fd.get('coder_id')||'').toString().trim();
-      const password=(fd.get('password')||'').toString().trim();
-      if(!coder_id||!password) return;
-      if(state.loading.students){showAlert(state.lang==='th'?'กำลังโหลดรายชื่อนักเรียน โปรดลองอีกครั้ง':'Students are still loading, please try again','warn');return;}
-      const s=state.students.find(x=>(x.coder_id||'').toLowerCase()===coder_id.toLowerCase());
-      if(!s){showAlert(state.lang==='th'?'ไม่พบ Coder ID':'Coder ID not found','error');return;}
-      if(String(s.parent_password).trim()!==password){showAlert(state.lang==='th'?'รหัสผู้ปกครองไม่ถูกต้อง':'Incorrect parent password','error');return;}
-      state.session={role:'parent',parentId:s.coder_id}; saveSession(); renderParent();
+    // Add Student modal helpers
+    function randomPass(len=6){
+      const chars='abcdefghijklmnopqrstuvwxyz0123456789';
+      let s=''; for(let i=0;i<len;i++) s+=chars[Math.floor(Math.random()*chars.length)];
+      return s;
     }
-    function handleCoachLogin(e){
+    function openAddStudentModal(){
+      if(state.session.role!=='coach'){
+        showAlert(state.lang==='th'?'ฟีเจอร์นี้สำหรับโค้ชเท่านั้น':'This feature is for coaches only','warn');
+        return;
+      }
+      const th = state.lang==='th';
+      $('#add-student-title').textContent = th? 'เพิ่มนักเรียนใหม่' : 'Add Student';
+      $('#add-student-note').textContent = th? 'กรอกข้อมูลนักเรียนด้านล่าง' : 'Fill student info below';
+      $('#lbl-stu-coderid').textContent = th? 'รหัสนักเรียน (Coder ID)' : 'Coder ID';
+      $('#lbl-stu-nickname').textContent = th? 'ชื่อเล่น' : 'Nickname';
+      $('#lbl-stu-fullname').textContent = th? 'ชื่อ-นามสกุล' : 'Full name';
+      $('#lbl-stu-status').textContent = th? 'สถานะ' : 'Status';
+      $('#lbl-stu-course').textContent = th? 'คอร์ส' : 'Course';
+      $('#lbl-stu-program').textContent = th? 'โปรแกรม (ถ้ามี)' : 'Program (optional)';
+      $('#lbl-stu-parentpass').textContent = th? 'รหัสผู้ปกครอง' : 'Parent Password';
+      $('#btn-save-student').textContent = th? 'บันทึกนักเรียน' : 'Save student';
+      $('#btn-cancel-addstudent').textContent = th? 'ยกเลิก' : 'Cancel';
+
+      const f = $('#form-add-student');
+      f.reset();
+      f.parent_password.value = randomPass();
+
+      const isDemo = CONFIG.appScriptPostUrl.includes('REPLACE_WITH_YOUR_DEPLOYED_ID');
+      $('#addstudent-hint').innerHTML = isDemo
+        ? (th? 'หมายเหตุ: ยังไม่ได้ตั้งค่า Apps Script — เดโมโหมด (ข้อมูลจะไม่ถูกเขียนลงชีตจริง)': 'Note: App Script URL not set yet — demo mode (won’t write to real sheet)')
+        : (th? 'ข้อมูลจะถูกส่งไปยัง Apps Script และเพิ่มลงชีต Students' : 'Data will be sent to Apps Script and appended to Students sheet');
+
+      const m = $('#modal-add-student');
+      m.classList.remove('hidden'); m.classList.add('flex');
+    }
+    function closeAddStudentModal(){
+      const m = $('#modal-add-student');
+      m.classList.add('hidden'); m.classList.remove('flex');
+    }
+    async function submitAddStudent(e){
       e.preventDefault();
-      const pass=(new FormData(e.target).get('password')||'').toString();
-      if(pass!==CONFIG.coachPassword){showAlert(state.lang==='th'?'รหัสผ่านโค้ชไม่ถูกต้อง':'Incorrect coach password','error');return;}
-      state.session={role:'coach',parentId:null}; saveSession(); renderCoach();
+      const f = e.target;
+      const payload = {
+        action: 'add_student',
+        coder_id: (f.coder_id.value||'').trim(),
+        nickname: (f.nickname.value||'').trim(),
+        fullname: (f.fullname.value||'').trim(),
+        status: (f.status.value||'').trim(),
+        course_status: (f.course_status.value||'').trim(),
+        program: (f.program.value||'').trim(),
+        parent_password: (f.parent_password.value||'').trim() || randomPass()
+      };
+
+      if(!payload.coder_id){ showAlert(state.lang==='th'?'กรุณากรอกรหัสนักเรียน':'Please provide Coder ID','warn'); return; }
+
+      if(state.students.some(s => (s.coder_id||'').toLowerCase() === payload.coder_id.toLowerCase())){
+        showAlert(state.lang==='th'?'มี Coder ID นี้อยู่แล้ว':'This Coder ID already exists','error');
+        return;
+      }
+
+      const isDemo = CONFIG.appScriptPostUrl.includes('REPLACE_WITH_YOUR_DEPLOYED_ID');
+      try{
+        if(isDemo){
+          state.students.unshift({...payload});
+          toast(state.lang==='th'?'บันทึกนักเรียน (เดโม) สำเร็จ':'Student saved (demo)', 'success');
+        }else{
+          const body = new URLSearchParams();
+          Object.entries(payload).forEach(([k,v])=>body.append(k,v));
+          const res = await fetch(CONFIG.appScriptPostUrl, { method:'POST', body });
+          if(!res.ok) throw new Error('Save failed');
+
+          toast(state.lang==='th'?'บันทึกนักเรียนสำเร็จ!':'Student saved!', 'success');
+          await loadStudents();
+        }
+        closeAddStudentModal();
+        if((location.hash||'').startsWith('#/coach')) renderCoach();
+      }catch(err){
+        console.error(err);
+        toast(state.lang==='th'?'เกิดข้อผิดพลาดในการเพิ่มนักเรียน':'Error adding student','error');
+      }
     }
 
     // Router
@@ -729,7 +917,6 @@
         sessionStorage.setItem('ciy_lang',state.lang);
         applyLanguage(); router();
       };
-      // set initial flag styles
       const tgl=document.getElementById('toggle-lang'); if(tgl){const isTH=state.lang==='th'; tgl.querySelector('.flag-th').style.opacity=isTH?'1':'0.35'; tgl.querySelector('.flag-en').style.opacity=isTH?'0.35':'1'; tgl.querySelector('.flag-th').style.filter=isTH?'none':'grayscale(1)'; tgl.querySelector('.flag-en').style.filter=isTH?'grayscale(1)':'none';}
 
       $('#form-parent-login').addEventListener('submit',handleParentLogin);
@@ -746,119 +933,40 @@
       $('#btn-cancel-report').onclick=closeModal;
       $('#form-report').addEventListener('submit',submitReport);
 
+      // Add Student modal controls
+      const btnAddStu = document.getElementById('btn-add-student');
+      if(btnAddStu) btnAddStu.onclick = openAddStudentModal;
+      const btnCloseAddStu = document.getElementById('modal-addstudent-close');
+      const btnCancelAddStu = document.getElementById('btn-cancel-addstudent');
+      if(btnCloseAddStu) btnCloseAddStu.onclick = closeAddStudentModal;
+      if(btnCancelAddStu) btnCancelAddStu.onclick = closeAddStudentModal;
+      const formAddStu = document.getElementById('form-add-student');
+      if(formAddStu) formAddStu.addEventListener('submit', submitAddStudent);
+
       window.addEventListener('hashchange',router);
-    // --- Add Student events ---
-const btnAddStu = document.getElementById('btn-add-student');
-if(btnAddStu) btnAddStu.onclick = openAddStudentModal;
-
-const btnCloseAddStu = document.getElementById('modal-addstudent-close');
-const btnCancelAddStu = document.getElementById('btn-cancel-addstudent');
-if(btnCloseAddStu) btnCloseAddStu.onclick = closeAddStudentModal;
-if(btnCancelAddStu) btnCancelAddStu.onclick = closeAddStudentModal;
-
-const formAddStu = document.getElementById('form-add-student');
-if(formAddStu) formAddStu.addEventListener('submit', submitAddStudent);
-}
-// ===== Add Student Helpers =====
-function randomPass(len=6){
-  const chars='abcdefghijklmnopqrstuvwxyz0123456789';
-  let s=''; for(let i=0;i<len;i++) s+=chars[Math.floor(Math.random()*chars.length)];
-  return s;
-}
-
-function openAddStudentModal(){
-  if(state.session.role!=='coach'){
-    showAlert(state.lang==='th'?'ฟีเจอร์นี้สำหรับโค้ชเท่านั้น':'This feature is for coaches only','warn');
-    return;
-  }
-  const th = state.lang==='th';
-  // แปลหัวข้อฟอร์มให้ตรงภาษา
-  $('#add-student-title').textContent = th? 'เพิ่มนักเรียนใหม่' : 'Add Student';
-  $('#add-student-note').textContent = th? 'กรอกข้อมูลนักเรียนด้านล่าง' : 'Fill student info below';
-  $('#lbl-stu-coderid').textContent = th? 'รหัสนักเรียน (Coder ID)' : 'Coder ID';
-  $('#lbl-stu-nickname').textContent = th? 'ชื่อเล่น' : 'Nickname';
-  $('#lbl-stu-fullname').textContent = th? 'ชื่อ-นามสกุล' : 'Full name';
-  $('#lbl-stu-status').textContent = th? 'สถานะ' : 'Status';
-  $('#lbl-stu-course').textContent = th? 'คอร์ส' : 'Course';
-  $('#lbl-stu-program').textContent = th? 'โปรแกรม (ถ้ามี)' : 'Program (optional)';
-  $('#lbl-stu-parentpass').textContent = th? 'รหัสผู้ปกครอง' : 'Parent Password';
-  $('#btn-save-student').textContent = th? 'บันทึกนักเรียน' : 'Save student';
-  $('#btn-cancel-addstudent').textContent = th? 'ยกเลิก' : 'Cancel';
-
-  // reset form
-  const f = $('#form-add-student');
-  f.reset();
-  // เติมรหัสผู้ปกครองแบบสุ่มถ้ายังว่าง
-  f.parent_password.value = randomPass();
-  // note ด้านล่าง
-  const isDemo = CONFIG.appScriptPostUrl.includes('REPLACE_WITH_YOUR_DEPLOYED_ID');
-  $('#addstudent-hint').innerHTML = isDemo
-    ? (th? 'หมายเหตุ: ยังไม่ได้ตั้งค่า Apps Script — เดโมโหมด (ข้อมูลจะไม่ถูกเขียนลงชีตจริง)': 'Note: App Script URL not set yet — demo mode (won’t write to real sheet)')
-    : (th? 'ข้อมูลจะถูกส่งไปยัง Apps Script และเพิ่มลงชีต Students' : 'Data will be sent to Apps Script and appended to Students sheet');
-
-  // open modal
-  const m = $('#modal-add-student');
-  m.classList.remove('hidden'); m.classList.add('flex');
-}
-
-function closeAddStudentModal(){
-  const m = $('#modal-add-student');
-  m.classList.add('hidden'); m.classList.remove('flex');
-}
-
-async function submitAddStudent(e){
-  e.preventDefault();
-  const f = e.target;
-  const payload = {
-    action: 'add_student',
-    coder_id: (f.coder_id.value||'').trim(),
-    nickname: (f.nickname.value||'').trim(),
-    fullname: (f.fullname.value||'').trim(),
-    status: (f.status.value||'').trim(),
-    course_status: (f.course_status.value||'').trim(),
-    program: (f.program.value||'').trim(),
-    parent_password: (f.parent_password.value||'').trim() || randomPass()
-  };
-
-  // ตรวจ Coder ID ซ้ำในตารางปัจจุบัน
-  if(state.students.some(s => (s.coder_id||'').toLowerCase() === payload.coder_id.toLowerCase())){
-    showAlert(state.lang==='th'?'มี Coder ID นี้อยู่แล้ว':'This Coder ID already exists','error');
-    return;
-  }
-
-  const isDemo = CONFIG.appScriptPostUrl.includes('REPLACE_WITH_YOUR_DEPLOYED_ID');
-  try{
-    if(isDemo){
-      // อัปเดต state ฝั่งหน้าเว็บ (เดโม)
-      state.students.unshift({
-        coder_id: payload.coder_id,
-        nickname: payload.nickname,
-        fullname: payload.fullname,
-        status: payload.status,
-        course_status: payload.course_status,
-        program: payload.program,
-        parent_password: payload.parent_password
-      });
-      toast(state.lang==='th'?'บันทึกนักเรียน (เดโม) สำเร็จ':'Student saved (demo)', 'success');
-    }else{
-      const body = new URLSearchParams();
-      Object.entries(payload).forEach(([k,v])=>body.append(k,v));
-      const res = await fetch(CONFIG.appScriptPostUrl, { method:'POST', body });
-      if(!res.ok) throw new Error('Save failed');
-
-      toast(state.lang==='th'?'บันทึกนักเรียนสำเร็จ!':'Student saved!', 'success');
-      // โหลด CSV ใหม่เพื่อสะท้อนข้อมูลล่าสุดจากชีต
-      await loadStudents();
     }
-    closeAddStudentModal();
-    // อยู่หน้ารายชื่อนักเรียนก็รีเรนเดอร์ใหม่
-    if((location.hash||'').startsWith('#/coach')) renderCoach();
-  }catch(err){
-    console.error(err);
-    toast(state.lang==='th'?'เกิดข้อผิดพลาดในการเพิ่มนักเรียน':'Error adding student','error');
-  }
-}
 
+    // Auth handlers
+    async function handleParentLogin(e){
+      e.preventDefault();
+      const fd=new FormData(e.target);
+      const coder_id=(fd.get('coder_id')||'').toString().trim();
+      const password=(fd.get('password')||'').toString().trim();
+      if(!coder_id||!password) return;
+      if(state.loading.students){showAlert(state.lang==='th'?'กำลังโหลดรายชื่อนักเรียน โปรดลองอีกครั้ง':'Students are still loading, please try again','warn');return;}
+      const s=state.students.find(x=>(x.coder_id||'').toLowerCase()===coder_id.toLowerCase());
+      if(!s){showAlert(state.lang==='th'?'ไม่พบ Coder ID':'Coder ID not found','error');return;}
+      if(String(s.parent_password).trim()!==password){showAlert(state.lang==='th'?'รหัสผู้ปกครองไม่ถูกต้อง':'Incorrect parent password','error');return;}
+      state.session={role:'parent',parentId:s.coder_id}; saveSession(); renderParent();
+    }
+    function handleCoachLogin(e){
+      e.preventDefault();
+      const pass=(new FormData(e.target).get('password')||'').toString();
+      if(pass!==CONFIG.coachPassword){showAlert(state.lang==='th'?'รหัสผ่านโค้ชไม่ถูกต้อง':'Incorrect coach password','error');return;}
+      state.session={role:'coach',parentId:null}; saveSession(); renderCoach();
+    }
+
+    // Start
     async function start(){
       loadSession();
       bindEvents();
@@ -868,5 +976,5 @@ async function submitAddStudent(e){
     }
     start();
   </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'982dc207668dd33d',t:'MTc1ODUwMTcwMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
