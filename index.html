@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CIY.CLUB Student Reports System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --ciy-blue:#173BA6; --ciy-yellow:#FFD200; --ciy-dark:#0A0F2C; }
+    html,body{height:100%}
+    html[lang="th"] body{font-family:'Noto Sans Thai',system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial}
+    html[lang="en"] body{font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial}
+    .bg-gradient-ciy{background:linear-gradient(180deg,#EBF4FF 0%,#FFFFFF 40%,#E6F0FF 100%)}
+    .glass{background:rgba(255,255,255,0.85);backdrop-filter:blur(10px);border:1px solid rgba(14,165,233,0.18)}
+    .btn-primary{background:#0ea5e9;color:#fff}.btn-primary:hover{filter:brightness(.95)}
+    .btn-blue{background:#0369a1;color:#fff}.btn-blue:hover{filter:brightness(1.05)}
+    .badge-green{background:#10B9811A;color:#10B981;border:1px solid #10B98155}
+    .badge-red{background:#EF44441A;color:#EF4444;border:1px solid #EF444455}
+    .badge-blue{background:#3B82F61A;color:#3B82F6;border:1px solid #3B82F655}
+    .input{background:#fff;border:1.5px solid #93c5fd;color:#0f172a}
+    .input:focus{outline:none;border-color:#0284c7;box-shadow:0 0 0 3px rgba(56,189,248,0.35)}
+    .input::placeholder{color:#64748b;opacity:.85}
+    .table-header{background:#e2e8f0}
+    table thead th{color:#0f172a;font-weight:600}
+    table thead th,table tbody td{border-bottom:1px solid #cbd5e1}
+    table tbody td{color:#0f172a}
+    .row-hover:hover{background:rgba(0,0,0,0.03)}
+    .shadow-strong{box-shadow:0 10px 30px rgba(0,0,0,0.35)}
+    .modal-overlay{background:rgba(0,0,0,0.55)}
+    .toast{animation:slideIn .4s ease}
+    @keyframes slideIn{from{transform:translateY(8px);opacity:0}to{transform:translateY(0);opacity:1}}
+    .link{color:#0284c7}.link:hover{color:#0369a1;text-decoration:underline}
+    .pill{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15)}
+    .seg{border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06)}
+    .seg button.active{background:var(--ciy-yellow);color:#1a1a1a}
+    .text-white\/50,.text-white\/60,.text-white\/70,.text-white\/80,.text-white{color:#0f172a!important}
+  </style>
+</head>
+<body class="bg-gradient-ciy text-sky-900">
+  <div id="app" class="min-h-screen">
+    <header class="sticky top-0 z-30 bg-white/70 backdrop-blur border-b border-sky-200">
+      <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <img src="https://static.wixstatic.com/media/437090_cd922165d6ba4d568dde8680dff0b0df~mv2.png/v1/fill/w_249,h_63,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/437090_cd922165d6ba4d568dde8680dff0b0df~mv2.png" alt="CIY Logo" class="h-9 w-auto" onerror="this.src='';this.alt='Logo failed to load';this.style.display='none'">
+        </div>
+        <div id="top-actions" class="flex items-center gap-2">
+          <button id="nav-home" class="px-3 py-2 rounded-lg hover:bg-white/10 transition">Home</button>
+          <button id="nav-parent" class="px-3 py-2 rounded-lg hover:bg-white/10 transition">Parent</button>
+          <button id="nav-coach" class="px-3 py-2 rounded-lg hover:bg-white/10 transition">Coach</button>
+          <button id="toggle-lang" class="ml-1 px-3 py-2 rounded-lg hover:bg-white/10 transition flex items-center gap-1" aria-label="Toggle language"><span class="flag-th">🇹🇭</span><span class="flag-en">🇬🇧</span></button>
+          <div id="sessionBox" class="ml-2"></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-8">
+      <div id="alert" class="hidden mb-4 p-3 rounded-lg border text-sm"></div>
+
+      <!-- Landing -->
+      <section id="view-landing" class="hidden">
+        <div class="max-w-3xl mx-auto">
+          <div class="glass rounded-2xl p-8 shadow-strong">
+            <h1 id="landing-title" class="text-3xl md:text-4xl font-extrabold leading-tight text-sky-900">Welcome to CIY.CLUB Student Reports</h1>
+            <p id="landing-desc" class="text-sky-700/80 mt-3">CIY.CLUB Student Progress Tracking System</p>
+            <div class="mt-6 flex flex-col sm:flex-row gap-3">
+              <a id="landing-parent-btn" href="#/parent" class="btn-primary px-5 py-3 rounded-xl font-semibold text-center">Parent Login</a>
+              <a id="landing-coach-btn" href="#/coach" class="btn-blue px-5 py-3 rounded-xl font-semibold text-center">Coach Login</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Parent -->
+      <section id="view-parent" class="hidden">
+        <div id="parent-login" class="glass rounded-2xl p-6 md:p-8 shadow-strong">
+          <h2 id="parent-login-title" class="text-2xl font-bold">Parent Login</h2>
+          <p id="parent-login-desc" class="text-white/70 mt-1 text-sm">Enter Coder ID and Parent Password</p>
+          <form id="form-parent-login" class="mt-6 grid md:grid-cols-3 gap-4" autocomplete="off">
+            <div class="md:col-span-1">
+              <label id="label-coder-id" class="block text-sm mb-1">Coder ID</label>
+              <input type="text" name="coder_id" required class="input w-full px-4 py-3 rounded-xl" placeholder="e.g., 6600001"/>
+            </div>
+            <div class="md:col-span-1">
+              <label id="label-parent-pass" class="block text-sm mb-1">Parent Password</label>
+              <input type="password" name="password" required class="input w-full px-4 py-3 rounded-xl" placeholder="••••••••"/>
+            </div>
+            <div class="md:col-span-1 flex items-end">
+              <button id="btn-parent-login" class="btn-primary w-full px-5 py-3 rounded-xl font-semibold">Log in</button>
+            </div>
+          </form>
+        </div>
+
+        <div id="parent-content" class="hidden mt-6 space-y-6">
+          <div class="glass rounded-2xl p-6 shadow-strong" id="parent-profile"></div>
+          <div class="glass rounded-2xl p-6 shadow-strong">
+            <div class="flex items-center justify-between mb-4">
+              <h3 id="parent-past-reports" class="text-xl font-bold">Past Reports</h3>
+              <div class="text-sm text-white/60" id="report-count"></div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border border-slate-300 rounded-xl overflow-hidden bg-white">
+                <thead class="table-header">
+                  <tr class="[&>th]:px-4 [&>th]:py-3">
+                    <th id="th-date-1">Date</th>
+                    <th id="th-course-1">Topic</th>
+                    <th id="th-lesson-1">Lesson</th>
+                    <th id="th-summary-1">Summary</th>
+                    <th id="th-coach-1">Coach</th>
+                    <th id="th-attach-1">Attachment</th>
+                  </tr>
+                </thead>
+                <tbody id="parent-reports"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Coach -->
+      <section id="view-coach" class="hidden">
+        <div id="coach-login" class="glass rounded-2xl p-6 md:p-8 shadow-strong">
+          <h2 id="coach-login-title" class="text-2xl font-bold">Coach Login</h2>
+          <p id="coach-login-desc" class="text-white/70 mt-1 text-sm">Enter the coach password</p>
+          <form id="form-coach-login" class="mt-6 grid md:grid-cols-3 gap-4" autocomplete="off">
+            <div class="md:col-span-2">
+              <label id="label-master-pass" class="block text-sm mb-1">รหัสผ่านหลัก</label>
+              <input type="password" name="password" required class="input w-full px-4 py-3 rounded-xl" placeholder="••••••••"/>
+            </div>
+            <div class="md:col-span-1 flex items-end">
+              <button id="btn-coach-login" class="btn-blue w-full px-5 py-3 rounded-xl font-semibold">เข้าสู่ระบบ</button>
+            </div>
+          </form>
+        </div>
+
+        <div id="coach-content" class="hidden mt-6 space-y-6">
+          <div class="flex flex-col md:flex-row gap-3 md:items-center md:justify-between">
+            <h3 id="coach-all-students" class="text-xl font-bold">รายชื่อนักเรียนทั้งหมด</h3>
+            <div class="flex items-center gap-2 flex-wrap">
+              <input id="coach-search" class="input px-4 py-3 rounded-xl w-72 max-w-full" placeholder="Search: Coder ID / Nickname / Name"/>
+              <button id="coach-clear" class="px-4 py-3 rounded-xl hover:bg-white/10">Clear</button>
+              <span class="hidden md:inline-block w-px h-6 bg-white/10 mx-1"></span>
+              <button id="btn-open-students" class="px-4 py-3 rounded-xl hover:bg-white/10">Open Students</button>
+              <button id="btn-open-reports" class="px-4 py-3 rounded-xl hover:bg-white/10">Open Reports</button>
+              <button id="btn-add-student" class="btn-primary px-4 py-3 rounded-xl font-semibold ml-1">+ Add Student</button>
+            </div>
+          </div>
+          <div class="glass rounded-2xl p-0 overflow-hidden shadow-strong">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border border-slate-300 rounded-xl overflow-hidden bg-white">
+                <thead class="table-header">
+                  <tr class="[&>th]:px-4 [&>th]:py-3 select-none">
+                    <th data-sort="coder_id" id="th-coderid" class="cursor-pointer">Coder ID</th>
+                    <th data-sort="nickname" id="th-nickname" class="cursor-pointer">Nickname</th>
+                    <th data-sort="fullname" id="th-fullname" class="cursor-pointer">Full name</th>
+                    <th data-sort="status" id="th-status" class="cursor-pointer">Status</th>
+                    <th data-sort="course_status" id="th-course" class="cursor-pointer">Course</th>
+                    <th id="th-parentpass">Parent Password</th>
+                  </tr>
+                </thead>
+                <tbody id="coach-students"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Student Detail -->
+      <section id="view-student" class="hidden">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
+          <div class="flex items-center gap-3">
+            <button id="btn-back-coach" class="px-3 py-2 rounded-lg hover:bg-white/10">← Back</button>
+            <h2 id="student-title" class="text-2xl font-bold">Student Detail</h2>
+          </div>
+          <div id="coach-actions" class="hidden">
+            <button id="btn-add-report" class="btn-primary px-4 py-2 rounded-xl font-semibold">+ Add Report</button>
+          </div>
+        </div>
+
+        <div id="student-profile" class="glass rounded-2xl p-6 shadow-strong mb-6"></div>
+
+        <div class="glass rounded-2xl p-6 shadow-strong">
+          <div class="flex items-center justify-between mb-4">
+            <h3 id="student-all-reports" class="text-xl font-bold">All Reports</h3>
+            <div class="text-sm text-white/60" id="student-report-count"></div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border border-slate-300 rounded-xl overflow-hidden bg-white">
+              <thead class="table-header">
+                <tr class="[&>th]:px-4 [&>th]:py-3">
+                  <th id="th-date-2">Date</th>
+                  <th id="th-course-2">Topic</th>
+                  <th id="th-lesson-2">Lesson</th>
+                  <th id="th-summary-2">Summary</th>
+                  <th id="th-coach-2">Coach</th>
+                  <th id="th-attach-2">Attachment</th>
+                </tr>
+              </thead>
+              <tbody id="student-reports"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal: Add Report -->
+  <div id="modal" class="fixed inset-0 hidden items-center justify-center z-40 modal-overlay">
+    <div class="w-full max-w-2xl mx-4 glass rounded-2xl p-6 relative shadow-strong">
+      <button id="modal-close" class="absolute top-3 right-3 px-3 py-1.5 rounded-lg hover:bg-white/10">✕</button>
+      <h3 id="add-report-title" class="text-xl font-bold">Add Report</h3>
+      <p id="modal-student" class="text-sm text-white/70 mt-1"></p>
+      <form id="form-report" class="mt-5 grid md:grid-cols-2 gap-4">
+        <div>
+          <label id="lbl-date" class="block text-sm mb-1">Date</label>
+          <input type="date" name="date" required class="input w-full px-4 py-3 rounded-xl"/>
+        </div>
+        <div>
+          <label id="lbl-course" class="block text-sm mb-1">Course</label>
+          <input type="text" name="course" required class="input w-full px-4 py-3 rounded-xl" placeholder="เช่น Rookie / Special / Trainee"/>
+        </div>
+        <div>
+          <label id="lbl-lesson" class="block text-sm mb-1">Lesson</label>
+          <input type="text" name="lesson" required class="input w-full px-4 py-3 rounded-xl" placeholder="Lesson topic"/>
+        </div>
+        <div>
+          <label id="lbl-coachname" class="block text-sm mb-1">Coach Name</label>
+          <input type="text" name="coach_name" required class="input w-full px-4 py-3 rounded-xl" placeholder="Coach name"/>
+        </div>
+        <div class="md:col-span-2">
+          <label id="lbl-summary" class="block text-sm mb-1">Progress Summary</label>
+          <textarea name="progress_summary" required class="input w-full px-4 py-3 rounded-xl min-h-[80px]" placeholder="What was achieved"></textarea>
+        </div>
+        <div>
+          <label id="lbl-skills" class="block text-sm mb-1">Skills</label>
+          <textarea name="skills" class="input w-full px-4 py-3 rounded-xl min-h-[80px]" placeholder="Skills practiced"></textarea>
+        </div>
+        <div>
+          <label id="lbl-homework" class="block text-sm mb-1">Homework</label>
+          <textarea name="homework" class="input w-full px-4 py-3 rounded-xl min-h-[80px]" placeholder="Homework"></textarea>
+        </div>
+        <div class="md:col-span-2">
+          <label id="lbl-nextplan" class="block text-sm mb-1">Next Plan</label>
+          <textarea name="next_plan" class="input w-full px-4 py-3 rounded-xl min-h-[80px]" placeholder="Plan for next session"></textarea>
+        </div>
+        <div class="md:col-span-2">
+          <label id="lbl-attachments" class="block text-sm mb-1">Attachments</label>
+          <input type="url" name="attachments" class="input w-full px-4 py-3 rounded-xl" placeholder="https://..."/>
+        </div>
+        <div class="md:col-span-2 flex items-center justify-end gap-3">
+          <button type="button" id="btn-cancel-report" class="px-4 py-3 rounded-xl hover:bg-white/10">Cancel</button>
+          <button id="btn-save-report" class="btn-primary px-5 py-3 rounded-xl font-semibold">Save report</button>
+        </div>
+      </form>
+      <div id="modal-note" class="text-xs text-white/60 mt-3"></div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-4 right-4 z-50"></div>
+
+  <script>
+    // CONFIG
+    const CONFIG = {
+      coachPassword: "Ciy.club@2025",
+      studentsCsv: "https://docs.google.com/spreadsheets/d/e/2PACX-1vT513ZZLUQp5zSHfkcfblFC5G0XrLUUJN6PBdfikUYr938X89Z_04AoN-yOXgczhd5kEdRzmDFjcB5E/pub?gid=0&single=true&output=csv",
+      reportsCsv: "https://docs.google.com/spreadsheets/d/e/2PACX-1vT513ZZLUQp5zSHfkcfblFC5G0XrLUUJN6PBdfikUYr938X89Z_04AoN-yOXgczhd5kEdRzmDFjcB5E/pub?gid=1733230311&single=true&output=csv",
+      sheetLinks: {
+        students: "https://docs.google.com/spreadsheets/d/1TmQPVH-oM2B6PEam42h-bC0y5mc_Kgxry1EzwTZxkuE/edit?gid=0#gid=0",
+        reports: "https://docs.google.com/spreadsheets/d/1TmQPVH-oM2B6PEam42h-bC0y5mc_Kgxry1EzwTZxkuE/edit?gid=1733230311#gid=1733230311"
+      },
+      appScriptPostUrl: "https://script.google.com/macros/s/AKfycbzBTUeMQwt8BQPfYfMhX9_X66GJGX9-yX_m5_Ut4WIUscQlubiMgMWk0I6sP4xOFf3h/exec",
+      courseLinks: { rookie:'#', trainee:'#', special:'#' }
+    };
+
+    // STATE
+    const state = {
+      students: [],
+      reports: [],
+      loading: { students:false, reports:false },
+      sort: { key:'coder_id', dir:'asc' },
+      session: { role:null, parentId:null },
+      lang: (sessionStorage.getItem('ciy_lang') || 'th'),
+      programOptions: ["Python","JavaScript","Electronic Arduino (Blockly)","Robotics Arduino (Blockly)","Minecraft Edu (Blockly)","HTML/CSS/JavaScript","App (App Lab Blockly)","3D Printing (Tinkercad)","Scratch (coding)","Scratch (Game creation)"]
+    };
+
+    // HELPERS
+    const $ = s => document.querySelector(s);
+    const el = (t,a={},c=[])=>{const n=document.createElement(t);for(const[k,v]of Object.entries(a)){if(k==='class')n.className=v;else if(k==='html')n.innerHTML=v;else if(k.startsWith('on')&&typeof v==='function')n.addEventListener(k.slice(2),v);else n.setAttribute(k,v)};for(const x of (Array.isArray(c)?c:[c])) if(x!=null) n.append(x.nodeType?x:document.createTextNode(x));return n;};
+    function showAlert(msg,type='info'){const box=$('#alert');const p={info:'bg-sky-50 border-sky-200 text-sky-700',success:'bg-emerald-50 border-emerald-200 text-emerald-700',error:'bg-rose-50 border-rose-200 text-rose-700',warn:'bg-amber-50 border-amber-200 text-amber-700'};box.className=`mb-4 p-3 rounded-lg border text-sm ${p[type]||p.info}`;box.textContent=msg;box.classList.remove('hidden');setTimeout(()=>box.classList.add('hidden'),4500)}
+    function toast(msg,kind='success'){const t=$('#toast');const bg=kind==='success'?'bg-emerald-500':kind==='error'?'bg-rose-500':'bg-sky-500';const d=el('div',{class:`toast ${bg} text-white px-4 py-3 rounded-xl shadow-lg mb-2`},msg);t.appendChild(d);setTimeout(()=>d.remove(),3000)}
+    function parseCSV(text){const rows=[];let i=0,cur='',inQ=false,row=[];while(i<text.length){const ch=text[i];if(inQ){if(ch=='"'){if(text[i+1]=='"'){cur+='"';i++}else inQ=false}else cur+=ch}else{if(ch=='"')inQ=true;else if(ch==','){row.push(cur);cur=''}else if(ch=='\r'){}else if(ch=='\n'){row.push(cur);rows.push(row);cur='';row=[]}else cur+=ch}i++}if(cur.length||row.length){row.push(cur);rows.push(row)}const header=rows.shift()||[];return rows.map(r=>{const o={};header.forEach((h,idx)=>o[h.trim()]=(r[idx]??'').trim());return o})}
+    function dateFromAny(s){if(!s)return null;const d=new Date(s);if(!isNaN(d))return d;const m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);if(m){const dd=+m[1],MM=+m[2]-1,yy=+m[3]<100?('20'+m[3]):+m[3];const dt=new Date(yy,MM,dd);if(!isNaN(dt))return dt}return null}
+    function fmtDate(s){const d=dateFromAny(s);if(!d)return s||'-';return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear()}
+    function statusBadge(status){const good=(status||'').toLowerCase().includes('enrolled');const bad=(status||'').toLowerCase().includes('not');const cls=good?'badge-green':bad?'badge-red':'badge-blue';const label=status||(state.lang==='th'?'ไม่ทราบ':'Unknown');return `<span class="text-xs px-2.5 py-1 rounded-full ${cls}">${label}</span>`}
+    function loadingRow(c=6){return `<tr><td colspan="${c}" class="px-4 py-6 text-white/60">${state.lang==='th'?'กำลังโหลด...':'Loading...'}</td></tr>`}
+    function emptyRow(msg,c=6){return `<tr><td colspan="${c}" class="px-4 py-6 text-white/60">${msg}</td></tr>`}
+    function linkOrDash(url){if(!url)return '-';const safe=url.startsWith('http')?url:null;return safe?`<a href="${safe}" target="_blank" rel="noopener noreferrer" class="link">${state.lang==='th'?'เปิด':'Open'}</a>`:'-'}
+    function shortCodeFor(s){const name=(s.nickname||'').replace(/[^A-Za-zก-ฮะ-์]/g,'').toUpperCase();const letters=(name+'XYZ').slice(0,3);const digits=((s.coder_id||'').match(/\d+/g)||['000']).join('').slice(-3)||'000';return letters+digits}
+    function pick(obj, keys=[]){for(const k of keys){if(!k)continue;const v=(obj[k]??'').toString().trim();if(v) return v}return ''}
+
+    // CSV fetch
+    async function fetchCSV(url){const res=await fetch(url,{cache:'no-store'});if(!res.ok) throw new Error('Failed to load');return parseCSV(await res.text())}
+
+    // Load Students
+    async function loadStudents(){
+      try{
+        state.loading.students=true;
+        const raw=await fetchCSV(CONFIG.studentsCsv);
+        const map = {
+          coder_id: ["No","Coder ID","ID","รหัสนักเรียน","coder_id","coder id"],
+          nickname: ["Name","Nickname","Nick name","ชื่อเล่น"],
+          status: ["Status","สถานะ","Enrollment Status"],
+          fullname: ["Fullname","Full name","ชื่อ-นามสกุล","ชื่อจริง"],
+          course_status: ["Status of course","Course","คอร์ส","course_status"],
+          program: ["Program","โปรแกรม","Python","Javascript"],
+          parent_password: ["Parent Password","Parent pass","รหัสผู้ปกครอง"]
+        };
+        state.students = raw.map(r=>{
+          const v=(keys)=>pick(r, keys);
+          return {
+            coder_id: v(map.coder_id),
+            nickname: v(map.nickname),
+            status: v(map.status),
+            fullname: v(map.fullname),
+            course_status: v(map.course_status),
+            program: v(map.program),
+            parent_password: v(map.parent_password) || '0000'
+          };
+        }).filter(s=>s.coder_id);
+      } catch(e){ showAlert(state.lang==='th'?'โหลดข้อมูลนักเรียนผิดพลาด':'Error loading Students','error'); }
+      finally{ state.loading.students=false; }
+    }
+
+    // FLEXIBLE REPORT HEADERS (accepts coach_name and coach _name, course or topic, optional lesson)
+    function rVal(row, candidates){
+      for(const key of candidates){
+        if (key in row && typeof row[key] !== 'undefined') {
+          const v = (row[key] ?? '').toString().trim();
+          if (v !== '') return v;
+        }
+      }
+      return '';
+    }
+
+    async function loadReports(){
+      try{
+        state.loading.reports=true;
+        const raw=await fetchCSV(CONFIG.reportsCsv);
+        // Define candidate headers for each field
+        const H = {
+          coder_id: ["coder_id","Coder ID","id","No","รหัสนักเรียน","coder id"],
+          date: ["date","วันที่","Date"],
+          course: ["course","topic","หัวข้อ","Course","Topic"],
+          lesson: ["lesson","บทเรียน","Lesson"],
+          progress_summary: ["progress_summary","summary","สรุป","Progress Summary"],
+          skills: ["skills","ทักษะ","Skills"],
+          homework: ["homework","การบ้าน","Homework"],
+          next_plan: ["next_plan","next plan","แผนถัดไป","Next Plan"],
+          coach_name: ["coach_name","coach _name","coach name","coach","Coach Name"],
+          attachments: ["attachments","attachment","แนบ","Attachment"]
+        };
+        state.reports = raw.map(r=>({
+          coder_id: rVal(r,H.coder_id),
+          date: rVal(r,H.date),
+          course: rVal(r,H.course),
+          lesson: rVal(r,H.lesson),
+          progress_summary: rVal(r,H.progress_summary),
+          skills: rVal(r,H.skills),
+          homework: rVal(r,H.homework),
+          next_plan: rVal(r,H.next_plan),
+          coach_name: rVal(r,H.coach_name),
+          attachments: rVal(r,H.attachments)
+        })).filter(x=>x.coder_id);
+      } catch(e){ console.warn('Reports load failed:', e); }
+      finally{ state.loading.reports=false; }
+    }
+
+    // SESSION
+    function saveSession(){sessionStorage.setItem('ciy_session',JSON.stringify(state.session));renderSessionBox()}
+    function loadSession(){try{const s=JSON.parse(sessionStorage.getItem('ciy_session')||'{}');if(s&&(s.role==='coach'||s.role==='parent')) state.session=s;}catch{} renderSessionBox()}
+    function logout(){state.session={role:null,parentId:null};saveSession();location.hash='#/'}
+    function renderSessionBox(){
+      const box=$('#sessionBox'); box.innerHTML='';
+      if(state.session.role){
+        const roleLabel = state.session.role==='coach' ? (state.lang==='th'?'โค้ช':'Coach') : (state.lang==='th'?`ผู้ปกครอง${state.session.parentId?' · '+state.session.parentId:''}`:`Parent${state.session.parentId?' · '+state.session.parentId:''}`);
+        const pill=el('div',{class:'flex items-center gap-2'},[
+          el('span',{class:'text-white/70 text-sm'},roleLabel),
+          el('button',{class:'px-3 py-1.5 rounded-lg hover:bg-white/10',onclick:logout},state.lang==='th'?'ออกจากระบบ':'Logout')
+        ]);
+        box.appendChild(pill);
+      }
+    }
+
+    // I18N
+    function applyLanguage(){
+      const th=state.lang==='th'; document.documentElement.setAttribute('lang', th?'th':'en');
+      $('#nav-home').textContent = th?'หน้าแรก':'Home';
+      $('#nav-parent').textContent = th?'ผู้ปกครอง':'Parent';
+      $('#nav-coach').textContent = th?'โค้ช':'Coach';
+
+      // Landing
+      $('#landing-title').textContent = th ? 'ระบบรายงานนักเรียน CIY' : 'Welcome to CIY.CLUB Student Reports';
+      $('#landing-desc').textContent = th ? 'ระบบติดตามความก้าวหน้านักเรียน CIY.CLUB' : 'CIY.CLUB Student Progress Tracking System';
+      $('#landing-parent-btn').textContent = th?'เข้าสู่ระบบผู้ปกครอง':'Parent Login';
+      $('#landing-coach-btn').textContent = th?'เข้าสู่ระบบโค้ช':'Coach Login';
+
+      // Parent
+      $('#parent-login-title').textContent = th?'เข้าสู่ระบบผู้ปกครอง':'Parent Login';
+      $('#parent-login-desc').textContent = th?'กรอกรหัสนักเรียนและรหัสผู้ปกครอง':'Enter Coder ID and Parent Password';
+      $('#label-coder-id').textContent = th?'รหัสนักเรียน (Coder ID)':'Coder ID';
+      $('#label-parent-pass').textContent = th?'รหัสผู้ปกครอง':'Parent Password';
+      $('#btn-parent-login').textContent = th?'เข้าสู่ระบบ':'Log in';
+      document.querySelector('#form-parent-login [name="coder_id"]').placeholder = th?'เช่น 6600001':'e.g., 6600001';
+
+      // Tables
+      $('#parent-past-reports').textContent = th?'รายงานที่ผ่านมา':'Past Reports';
+      $('#th-date-1').textContent = th?'วันที่':'Date';
+      $('#th-course-1').textContent = th?'หัวข้อ':'Topic';
+      $('#th-lesson-1').textContent = th?'บทเรียน':'Lesson';
+      $('#th-summary-1').textContent = th?'สรุป':'Summary';
+      $('#th-coach-1').textContent = th?'โค้ช':'Coach';
+      $('#th-attach-1').textContent = th?'ไฟล์แนบ':'Attachment';
+
+      $('#coach-login-title').textContent = th?'เข้าสู่ระบบโค้ช':'Coach Login';
+      $('#coach-login-desc').textContent = th?'กรอกรหัสผ่านสำหรับโค้ช':'Enter the coach password';
+      $('#label-master-pass').textContent = th?'รหัสผ่านหลัก':'Master Password';
+      $('#btn-coach-login').textContent = th?'เข้าสู่ระบบ':'Log in';
+      $('#coach-all-students').textContent = th?'รายชื่อนักเรียนทั้งหมด':'All Students';
+      $('#coach-search').placeholder = th?'ค้นหา: Coder ID / ชื่อเล่น / ชื่อจริง':'Search: Coder ID / Nickname / Name';
+      $('#coach-clear').textContent = th?'ล้าง':'Clear';
+      $('#btn-open-students').textContent = th?'เปิดชีต Students':'Open Students';
+      $('#btn-open-reports').textContent = th?'เปิดชีต Reports':'Open Reports';
+      $('#btn-add-student').textContent = th?'+ เพิ่มนักเรียน':'+ Add Student';
+      $('#th-coderid').textContent = 'Coder ID';
+      $('#th-nickname').textContent = th?'ชื่อเล่น':'Nickname';
+      $('#th-fullname').textContent = th?'ชื่อ-นามสกุล':'Full name';
+      $('#th-status').textContent = th?'สถานะ':'Status';
+      $('#th-course').textContent = th?'คอร์ส':'Course';
+      $('#th-parentpass').textContent = th?'รหัสผู้ปกครอง':'Parent Password';
+
+      $('#btn-back-coach').textContent = th?'← ย้อนกลับ':'← Back';
+      $('#student-title').textContent = th?'ข้อมูลนักเรียน':'Student Detail';
+      $('#btn-add-report').textContent = th?'+ เพิ่มรายงาน':'+ Add Report';
+      $('#student-all-reports').textContent = th?'รายงานทั้งหมด':'All Reports';
+      $('#th-date-2').textContent = th?'วันที่':'Date';
+      $('#th-course-2').textContent = th?'หัวข้อ':'Topic';
+      $('#th-lesson-2').textContent = th?'บทเรียน':'Lesson';
+      $('#th-summary-2').textContent = th?'สรุป':'Summary';
+      $('#th-coach-2').textContent = th?'โค้ช':'Coach';
+      $('#th-attach-2').textContent = th?'ไฟล์แนบ':'Attachment';
+
+      // Update flags visual
+      const tgl = document.getElementById('toggle-lang');
+      if (tgl) {
+        const isTH = th;
+        tgl.querySelector('.flag-th').style.opacity = isTH ? '1' : '0.35';
+        tgl.querySelector('.flag-en').style.opacity = isTH ? '0.35' : '1';
+        tgl.querySelector('.flag-th').style.filter = isTH ? 'none' : 'grayscale(1)';
+        tgl.querySelector('.flag-en').style.filter = isTH ? 'grayscale(1)' : 'none';
+      }
+    }
+
+    // RENDER
+    function renderLanding(){showView('view-landing')}
+    function renderParent(){
+      showView('view-parent');
+      const isLogged = state.session.role==='parent' && !!state.session.parentId;
+      $('#parent-login').classList.toggle('hidden', isLogged);
+      $('#parent-content').classList.toggle('hidden', !isLogged);
+      if (!isLogged) return;
+      const s = state.students.find(x=>x.coder_id===state.session.parentId);
+      const profileBox = $('#parent-profile');
+      if (!s){ profileBox.innerHTML=`<div class="text-white/70">Student not found</div>`; return; }
+      profileBox.innerHTML = `
+        <div class="flex gap-4">
+          <div class="w-16 h-16 rounded-2xl flex items-center justify-center" style="background:#1a2a66;">
+            <span class="text-2xl font-extrabold">${(s.nickname||'?').slice(0,1).toUpperCase()}</span>
+          </div>
+          <div class="flex-1">
+            <div class="flex flex-wrap items-center gap-2">
+              <div class="text-2xl font-bold">${s.nickname} <span class="text-white/50 font-medium">(${s.coder_id})</span></div>
+              ${statusBadge(s.status)}
+              <span class="text-xs px-2.5 py-1 rounded-full badge-blue">${s.course_status || 'N/A'}</span>
+              <span class="text-xs px-2.5 py-1 rounded-full bg-white/10 border border-white/15 text-white/80">Code: ${shortCodeFor(s)}</span>
+            </div>
+            <div class="text-white/70 mt-1">${s.fullname || '-'}</div>
+            <div class="mt-3 grid sm:grid-cols-2 gap-3">
+              <div class="p-3 rounded-xl bg-white/5 border border-white/10">${state.lang==='th'?'โปรแกรม':'Program'}: <span class="font-semibold">${s.program || '-'}</span></div>
+              <div class="p-3 rounded-xl bg-white/5 border border-white/10">${state.lang==='th'?'รหัสผู้ปกครอง':'Parent Password'}: <span class="font-semibold">${s.parent_password}</span></div>
+            </div>
+          </div>
+        </div>
+      `;
+      const tbody=$('#parent-reports');
+      tbody.innerHTML = state.loading.reports ? loadingRow() : '';
+      const reports = state.reports.filter(r=>r.coder_id===s.coder_id).sort((a,b)=>dateFromAny(b.date)-dateFromAny(a.date));
+      $('#report-count').textContent = `${reports.length} ${state.lang==='th'?'รายการ':'items'}`;
+      if (!state.loading.reports && reports.length===0) tbody.innerHTML = emptyRow(state.lang==='th'?'ยังไม่มีรายงาน':'No reports yet',6);
+      else if (!state.loading.reports){
+        tbody.innerHTML = reports.map(r=>`
+          <tr class="row-hover">
+            <td class="px-4 py-3">${fmtDate(r.date)}</td>
+            <td class="px-4 py-3">${r.course || '-'}</td>
+            <td class="px-4 py-3">${r.lesson || '-'}</td>
+            <td class="px-4 py-3 max-w-[420px]"><div class="line-clamp-2">${r.progress_summary || '-'}</div></td>
+            <td class="px-4 py-3">${r.coach_name || '-'}</td>
+            <td class="px-4 py-3">${linkOrDash(r.attachments)}</td>
+          </tr>
+        `).join('');
+      }
+    }
+    function renderCoach(){
+      showView('view-coach');
+      const isLogged = state.session.role==='coach';
+      $('#coach-login').classList.toggle('hidden', isLogged);
+      $('#coach-content').classList.toggle('hidden', !isLogged);
+      if (!isLogged) return;
+
+      const q=($('#coach-search').value||'').trim().toLowerCase();
+      let list=state.students.slice();
+      if(q){
+        list=list.filter(s=>
+          (s.coder_id||'').toLowerCase().includes(q)||
+          (s.nickname||'').toLowerCase().includes(q)||
+          (s.fullname||'').toLowerCase().includes(q)||
+          (s.program||'').toLowerCase().includes(q)
+        );
+      }
+      const {key,dir}=state.sort;
+      list.sort((a,b)=>{const av=(a[key]||'').toString().toLowerCase(), bv=(b[key]||'').toString().toLowerCase(); if(av<bv) return dir==='asc'?-1:1; if(av>bv) return dir==='asc'?1:-1; return 0;});
+      const tbody=$('#coach-students');
+      if(state.loading.students){tbody.innerHTML=loadingRow(6);return;}
+      if(list.length===0){tbody.innerHTML=emptyRow(state.lang==='th'?'ไม่พบนักเรียนที่ค้นหา':'No matching students',6);return;}
+      tbody.innerHTML = list.map(s=>`
+        <tr class="row-hover cursor-pointer" data-id="${s.coder_id}">
+          <td class="px-4 py-3">${s.coder_id}</td>
+          <td class="px-4 py-3">
+            <div>${s.nickname || '-'}</div>
+            <div class="text-xs text-white/50 mt-0.5">Code: ${shortCodeFor(s)}</div>
+          </td>
+          <td class="px-4 py-3">${s.fullname || '-'}</td>
+          <td class="px-4 py-3">${statusBadge(s.status)}</td>
+          <td class="px-4 py-3">${s.course_status || '-'}</td>
+          <td class="px-4 py-3">${s.parent_password ? `<span class="px-2 py-1 rounded-lg pill text-xs">${s.parent_password}</span>` : `<span class="text-xs text-red-300">${state.lang==='th'?'ไม่มีรหัสผู้ปกครอง':'No parent pass'}</span>`}</td>
+        </tr>
+      `).join('');
+      Array.from(tbody.querySelectorAll('tr')).forEach(tr=>tr.addEventListener('click',()=>{location.hash=`#/student/${tr.getAttribute('data-id')}`}));      
+      document.querySelectorAll('thead th[data-sort]').forEach(th=>{
+        th.onclick=()=>{ const k=th.getAttribute('data-sort'); if(state.sort.key===k) state.sort.dir=state.sort.dir==='asc'?'desc':'asc'; else {state.sort.key=k;state.sort.dir='asc'}; renderCoach(); };
+      });
+    }
+    function renderStudentDetail(id){
+      showView('view-student');
+      $('#coach-actions').classList.toggle('hidden', state.session.role!=='coach');
+      $('#btn-back-coach').onclick=()=>{location.hash='#/coach'};
+      const s=state.students.find(x=>x.coder_id===id);
+      $('#student-title').textContent = s ? (state.lang==='th'?'ข้อมูลนักเรียน':'Student Detail') : (state.lang==='th'?'ไม่พบนักเรียน':'Student');
+      const profile=$('#student-profile');
+      if(!s){ profile.innerHTML=`<div class="text-white/70">${state.lang==='th'?'ไม่พบนักเรียน':'Student not found'}</div>`; }
+      else{
+        const status=(s.status||'').toLowerCase().includes('enrolled') && !(s.status||'').toLowerCase().includes('not') ? 'Enrolled' : ((s.status||'').toLowerCase().includes('not') ? 'Not re-enrolled' : (s.status||'Unknown'));
+        profile.innerHTML=`
+          <div class="flex flex-col sm:flex-row gap-4">
+            <div class="w-16 h-16 rounded-2xl flex items-center justify-center" style="background:#1a2a66;"><span class="text-2xl font-extrabold">${(s.nickname||'?').slice(0,1).toUpperCase()}</span></div>
+            <div class="flex-1">
+              <div class="flex flex-wrap items-center gap-2">
+                <div class="text-2xl font-bold">${s.nickname} <span class="text-white/50 font-medium">(${s.coder_id})</span></div>
+                ${statusBadge(s.status)}
+                <span class="text-xs px-2.5 py-1 rounded-full badge-blue">${s.course_status || 'N/A'}</span>
+                <span class="text-xs px-2.5 py-1 rounded-full bg-white/10 border border-white/15 text-white/80">Code: ${shortCodeFor(s)}</span>
+                ${state.session.role==='coach' ? `<span class="text-xs px-2.5 py-1 rounded-full bg-white/10 border border-white/15 text-white/80">${state.lang==='th'?'ผู้ปกครอง':'Parent'}: ${s.parent_password || '0000'}</span>`:``}
+              </div>
+              <div class="text-white/70 mt-1">${s.fullname || '-'}</div>
+            </div>
+          </div>
+        `;
+      }
+      const tbody=$('#student-reports');
+      tbody.innerHTML = state.loading.reports ? loadingRow() : '';
+      const reports=state.reports.filter(r=>r.coder_id===id).sort((a,b)=>dateFromAny(b.date)-dateFromAny(a.date));
+      $('#student-report-count').textContent = `${reports.length} ${state.lang==='th'?'รายการ':'items'}`;
+      if(!state.loading.reports && reports.length===0){tbody.innerHTML=emptyRow(state.lang==='th'?'ยังไม่มีรายงาน':'No reports yet',6)}
+      else if(!state.loading.reports){
+        tbody.innerHTML = reports.map(r=>`
+          <tr class="row-hover">
+            <td class="px-4 py-3">${fmtDate(r.date)}</td>
+            <td class="px-4 py-3">${r.course || '-'}</td>
+            <td class="px-4 py-3">${r.lesson || '-'}</td>
+            <td class="px-4 py-3 max-w-[420px]"><div class="line-clamp-2">${r.progress_summary || '-'}</div></td>
+            <td class="px-4 py-3">${r.coach_name || '-'}</td>
+            <td class="px-4 py-3">${linkOrDash(r.attachments)}</td>
+          </tr>
+        `).join('');
+      }
+      $('#btn-add-report').onclick=()=>openReportModal(s);
+    }
+
+    // View control
+    function showView(id){['view-landing','view-parent','view-coach','view-student'].forEach(v=>document.getElementById(v).classList.add('hidden')); document.getElementById(id).classList.remove('hidden')}
+
+    // Modal: Add Report (frontend-only save UI; real save uses Apps Script)
+    function openReportModal(student){
+      if(state.session.role!=='coach'){ showAlert(state.lang==='th'?'ฟีเจอร์นี้สำหรับโค้ชเท่านั้น':'This feature is for coaches only','warn'); return; }
+      $('#modal-student').textContent = `${state.lang==='th'?'สำหรับ':'For'}: ${student.nickname} (${student.coder_id})`;
+      const form=$('#form-report'); form.reset(); form.date.value=new Date().toISOString().slice(0,10); form.dataset.coder_id=student.coder_id;
+      const isDemo=CONFIG.appScriptPostUrl.includes('REPLACE_WITH_YOUR_DEPLOYED_ID');
+      $('#modal-note').innerHTML = isDemo ? (state.lang==='th'?'หมายเหตุ: ยังไม่ได้ตั้งค่า Apps Script การบันทึกนี้เป็นเดโม':'Note: App Script URL not set yet. This is a demo save.') : (state.lang==='th'?'ข้อมูลจะถูกส่งไปยัง Apps Script และเพิ่มลงชีตรายงาน':'Data will be sent to Google Apps Script and appended to the Reports sheet.');
+      $('#modal').classList.remove('hidden'); $('#modal').classList.add('flex');
+    }
+    function closeModal(){ $('#modal').classList.add('hidden'); $('#modal').classList.remove('flex'); }
+    async function submitReport(e){
+      e.preventDefault();
+      const form=e.target; const coder_id=form.dataset.coder_id;
+      const payload={
+        coder_id, date:form.date.value, course:form.course.value.trim(),
+        lesson:form.lesson.value.trim(), progress_summary:form.progress_summary.value.trim(),
+        skills:form.skills.value.trim(), homework:form.homework.value.trim(),
+        next_plan:form.next_plan.value.trim(), coach_name:form.coach_name.value.trim(),
+        attachments:form.attachments.value.trim()
+      };
+      const isDemo=CONFIG.appScriptPostUrl.includes('REPLACE_WITH_YOUR_DEPLOYED_ID');
+      try{
+        if(isDemo){
+          state.reports.unshift({...payload});
+          toast(state.lang==='th'?'บันทึกสำเร็จ (เดโม)':'Saved (demo)', 'success');
+        }else{
+          const body=new URLSearchParams(); Object.entries(payload).forEach(([k,v])=>body.append(k,v));
+          const res=await fetch(CONFIG.appScriptPostUrl,{method:'POST',body});
+          if(!res.ok) throw new Error('Save failed');
+          toast(state.lang==='th'?'บันทึกสำเร็จ!':'Saved!','success');
+          await loadReports();
+        }
+        closeModal();
+        const m=(location.hash||'').match(/^#\/student\/(.+)$/); if(m) renderStudentDetail(m[1]);
+      }catch(err){ console.error(err); toast(state.lang==='th'?'เกิดข้อผิดพลาดขณะบันทึก':'Error saving','error'); }
+    }
+
+    // Auth handlers
+    async function handleParentLogin(e){
+      e.preventDefault();
+      const fd=new FormData(e.target);
+      const coder_id=(fd.get('coder_id')||'').toString().trim();
+      const password=(fd.get('password')||'').toString().trim();
+      if(!coder_id||!password) return;
+      if(state.loading.students){showAlert(state.lang==='th'?'กำลังโหลดรายชื่อนักเรียน โปรดลองอีกครั้ง':'Students are still loading, please try again','warn');return;}
+      const s=state.students.find(x=>(x.coder_id||'').toLowerCase()===coder_id.toLowerCase());
+      if(!s){showAlert(state.lang==='th'?'ไม่พบ Coder ID':'Coder ID not found','error');return;}
+      if(String(s.parent_password).trim()!==password){showAlert(state.lang==='th'?'รหัสผู้ปกครองไม่ถูกต้อง':'Incorrect parent password','error');return;}
+      state.session={role:'parent',parentId:s.coder_id}; saveSession(); renderParent();
+    }
+    function handleCoachLogin(e){
+      e.preventDefault();
+      const pass=(new FormData(e.target).get('password')||'').toString();
+      if(pass!==CONFIG.coachPassword){showAlert(state.lang==='th'?'รหัสผ่านโค้ชไม่ถูกต้อง':'Incorrect coach password','error');return;}
+      state.session={role:'coach',parentId:null}; saveSession(); renderCoach();
+    }
+
+    // Router
+    function router(){
+      const hash=location.hash||'#/';
+      if(hash==='#/'||hash==='#'){renderLanding();}
+      else if(hash.startsWith('#/parent')){renderParent();}
+      else if(hash.startsWith('#/coach')){renderCoach();}
+      else if(hash.startsWith('#/student/')){const m=hash.match(/^#\/student\/(.+)$/); if(m) renderStudentDetail(m[1]); else renderLanding();}
+      else renderLanding();
+    }
+
+    // Events
+    function bindEvents(){
+      $('#nav-home').onclick=()=>location.hash='#/';
+      $('#nav-parent').onclick=()=>location.hash='#/parent';
+      $('#nav-coach').onclick=()=>location.hash='#/coach';
+
+      const toggleBtn=document.getElementById('toggle-lang');
+      if(toggleBtn) toggleBtn.onclick=()=>{
+        state.lang=state.lang==='th'?'en':'th';
+        sessionStorage.setItem('ciy_lang',state.lang);
+        applyLanguage(); router();
+      };
+      // set initial flag styles
+      const tgl=document.getElementById('toggle-lang'); if(tgl){const isTH=state.lang==='th'; tgl.querySelector('.flag-th').style.opacity=isTH?'1':'0.35'; tgl.querySelector('.flag-en').style.opacity=isTH?'0.35':'1'; tgl.querySelector('.flag-th').style.filter=isTH?'none':'grayscale(1)'; tgl.querySelector('.flag-en').style.filter=isTH?'grayscale(1)':'none';}
+
+      $('#form-parent-login').addEventListener('submit',handleParentLogin);
+      $('#form-coach-login').addEventListener('submit',handleCoachLogin);
+
+      $('#coach-search').addEventListener('input',()=>renderCoach());
+      $('#coach-clear').addEventListener('click',()=>{$('#coach-search').value='';renderCoach();});
+
+      const openSheet=(type)=>{const links=CONFIG.sheetLinks||{}; const url=type==='students'?links.students:links.reports; if(!url){toast(state.lang==='th'?'ยังไม่ได้ตั้งค่าลิงก์ชีต':'Sheet link not set','error');return;} window.open(url,'_blank');};
+      $('#btn-open-students').onclick=()=>openSheet('students');
+      $('#btn-open-reports').onclick=()=>openSheet('reports');
+
+      $('#modal-close').onclick=closeModal;
+      $('#btn-cancel-report').onclick=closeModal;
+      $('#form-report').addEventListener('submit',submitReport);
+
+      window.addEventListener('hashchange',router);
+    }
+
+    async function start(){
+      loadSession();
+      bindEvents();
+      await Promise.all([loadStudents(), loadReports()]);
+      applyLanguage();
+      router();
+    }
+    start();
+  </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'982dc207668dd33d',t:'MTc1ODUwMTcwMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
